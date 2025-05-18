@@ -1,0 +1,195 @@
+.homepage-bg {
+  background: linear-gradient(180deg, #6a0000 0%, #b71c1c 100%);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Add to: c:\Users\jana\Documents\fixup_\frontend\src\styles\HomPage.css */
+/* Add or update in: c:\Users\jana\Documents\fixup_\frontend\src\styles\HomPage.css */
+.hero-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  z-index: 3;
+  transition: background 0.2s;
+  opacity: 0.9;
+}
+.hero-arrow.left {
+  left: 18px;
+}
+.hero-arrow.right {
+  right: 18px;
+}
+.hero-arrow svg {
+  display: block;
+}
+.hero-arrow:focus {
+  outline: none;
+}
+/* Add or update in c:\Users\jana\Documents\fixup_\frontend\src\styles\HomPage.css */
+.hero-img-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+  position: absolute;
+  inset: 0;
+}
+.hero-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  z-index: 2;
+}
+.hero-text-group {
+  width: 100%;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #e74c3c;
+  margin-bottom: 0;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-bottom: 18px;
+  color: #fff;
+  opacity: 0.85;
+}
+
+.hero-main-text {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+  line-height: 1.2;
+}
+
+.hero-dots {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.4;
+  display: inline-block;
+}
+.dot.active {
+  opacity: 1;
+  background: #e74c3c;
+}
+
+.services-section {
+  background: transparent;
+  padding: 36px 0 0 0;
+  text-align: center;
+}
+
+.services-section h2 {
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 0;
+  letter-spacing: 1px;
+}
+
+.services-underline {
+  width: 50px;
+  height: 2px;
+  background: #e74c3c;
+  margin: 8px auto 24px auto;
+  border-radius: 2px;
+}
+
+.cta-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.cta-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+  padding: 28px 18px 22px 18px;
+  max-width: 600px;
+  width: 98%;
+  text-align: center;
+}
+
+.cta-title {
+  color: #c0392b;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.cta-desc {
+  color: #333;
+  font-size: 1rem;
+  margin-bottom: 18px;
+}
+
+.cta-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cta-btn:hover {
+  background: #c0392b;
+}
+
+@media (max-width: 700px) {
+  .hero-section {
+    height: 220px;
+  }
+  .hero-title {
+    font-size: 1.5rem;
+  }
+  .hero-main-text {
+    font-size: 1.1rem;
+  }
+  .cta-card {
+    padding: 16px 4vw 12px 4vw;
+  }
+}

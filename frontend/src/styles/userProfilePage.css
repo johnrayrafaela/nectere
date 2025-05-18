@@ -1,0 +1,136 @@
+.profile-container {
+  max-width: 900px;
+  margin: 40px auto 30px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  justify-content: center;
+}
+
+.profile-card {
+  background: linear-gradient(180deg, #f9d976 0%, #f39f86 100%);
+  border-radius: 14px;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.09);
+  padding: 32px 28px 24px 28px;
+  min-width: 320px;
+  max-width: 350px;
+  flex: 1 1 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-header h2 {
+  color: #e74c3c;
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.profile-header h2::after {
+  margin-left: auto;
+  margin-right: auto;
+  content: "";
+  display: block;
+  width: 32px;
+  height: 2px;
+  background: #e74c3c;
+  margin-top: 4px;
+}
+
+.profile-picture-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.profile-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  margin-bottom: 10px;
+  background: #f4f6fb;
+}
+
+.profile-picture-section input[type="file"] {
+  margin-top: 6px;
+  font-size: 0.95rem;
+}
+
+.profile-info {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.profile-info p {
+  margin: 8px 0;
+  font-size: 1.08rem;
+  color: #fff;
+}
+
+.profile-info strong {
+  color: #e74c3c;
+}
+
+.admin-btn {
+  width: 100%;
+  background: #c0392b;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 10px 0;
+  margin: 8px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.admin-btn:hover {
+  background: #a93226;
+}
+
+.error {
+  color: #c0392b;
+  background: #fff3f3;
+  border-radius: 6px;
+  padding: 8px 0;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.appointment-history-container {
+  flex: 2 1 400px;
+  min-width: 320px;
+  max-width: 540px;
+}
+
+@media (max-width: 900px) {
+  .profile-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+  .profile-card, .appointment-history-container {
+    max-width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-card {
+    padding: 16px 8vw 12px 8vw;
+    min-width: unset;
+  }
+  .profile-image {
+    width: 90px;
+    height: 90px;
+  }
+  .profile-header h2 {
+    font-size: 1.2rem;
+  }
+}

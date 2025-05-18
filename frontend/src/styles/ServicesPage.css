@@ -1,0 +1,270 @@
+/* General container styling */
+.services-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* Page heading */
+.services-container h2 {
+  text-align: center;
+  font-size: 28px;
+  color: #fff;
+  margin-bottom: 20px;
+}
+.services-container h2::after {
+  margin-left: auto;
+  margin-right: auto;
+  content: "";
+  display: block;
+  width: 32px;
+  height: 2px;
+  background: #e74c3c;
+  margin-top: 4px;
+}
+
+/* Navbar styling */
+.category-navbar {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.category-navbar button {
+  width: 100%;
+  background-color: transparent;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  min-width: 120px;
+}
+.category-navbar button:focus {
+  outline: none;
+  background-color: #c0392b !important;
+  color: #fff;
+  box-shadow: 0 0 0 2px #e74c3c55;
+}
+
+.category-navbar button:hover {
+  background-color:#c0392b;
+}
+
+.category-navbar button:focus,
+.category-navbar button:active {
+  outline: none;
+  background-color: #c0392b !important;
+  color: #fff;
+  box-shadow: none;
+}
+
+/* Category Navbar Button Themes */
+.category-navbar .fixup {
+  background: linear-gradient(90deg, #c0392b 80%, #e74c3c 100%);
+  color: #fff;
+}
+.category-navbar .h2go {
+  background: linear-gradient(90deg, #2980b9 80%, #6dd5fa 100%);
+  color: #fff;
+}
+.category-navbar .petconnect {
+  background: linear-gradient(90deg, #b7986b 80%, #f7e9d0 100%);
+  color: #5c4326;
+}
+.category-navbar .wallfix {
+  background: linear-gradient(90deg, #a2836e 80%, #e0c3a3 100%);
+  color: #4b3a2f;
+}
+.category-navbar .fixup,
+.category-navbar .h2go,
+.category-navbar .petconnect,
+.category-navbar .wallfix {
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.category-navbar .fixup:hover {
+  background: linear-gradient(90deg, #e74c3c 80%, #c0392b 100%);
+}
+.category-navbar .h2go:hover {
+  background: linear-gradient(90deg, #6dd5fa 80%, #2980b9 100%);
+}
+.category-navbar .petconnect:hover {
+  background: linear-gradient(90deg, #f7e9d0 80%, #b7986b 100%);
+}
+.category-navbar .wallfix:hover {
+  background: linear-gradient(90deg, #e0c3a3 80%, #a2836e 100%);
+}
+
+/* Services list */
+.services-list {
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Service card styling */
+.service-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  margin: 10px;
+  background-color: #fff; /* Always white background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Remove background gradients from themed cards */
+.service-card.fixup,
+.service-card.h2go,
+.service-card.petconnect,
+.service-card.wallfix {
+  background: #fff;
+}
+
+/* Text color for all cards */
+.service-card h3,
+.service-card p {
+  color: #333;
+}
+
+/* Themed buttons */
+.service-card.fixup button {
+  background-color: #e74c3c;
+  color: #fff;
+}
+.service-card.fixup button:hover {
+  background-color: #c0392b;
+  color: #fff;
+}
+
+.service-card.h2go button {
+  background-color: #2980b9;
+  color: #fff;
+}
+.service-card.h2go button:hover {
+  background-color: #2471a3;
+  color: #fff;
+}
+
+.service-card.petconnect button {
+  background-color: #b7986b;
+  color: #fff;
+}
+.service-card.petconnect button:hover {
+  background-color: #a0824a;
+  color: #fff;
+}
+
+.service-card.wallfix button {
+  background-color: #a2836e;
+  color: #fff;
+}
+.service-card.wallfix button:hover {
+  background-color: #7e614b;
+  color: #fff;
+}
+
+/* Disabled button */
+.service-card button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Service image */
+.service-image {
+  width: 250px;
+  height: 180px;              /* Fixed height */
+  max-width: 100%;            /* Ensures it doesn't overflow card */
+  object-fit: cover;          /* Ensures image fills area and is cropped if needed */
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: #f2f2f2;        /* Optional: subtle bg for non-square images */
+  display: block;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Error and loading messages */
+.error {
+  color: red;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .services-list {
+    gap: 14px;
+  }
+  .service-card {
+    width: 45%;
+    min-width: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .services-list {
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .service-card {
+    width: 90%;
+    min-width: unset;
+  }
+
+  .category-navbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .category-navbar button {
+    width: 100%;
+    min-width: unset;
+    text-align: center;
+    font-size: 15px;
+    padding: 8px 0;
+  }
+  .services-container h2 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-container {
+    padding: 8px;
+  }
+  .service-card {
+    padding: 10px;
+    width: 100%;
+    font-size: 14px;
+  }
+  .category-navbar {
+    gap: 6px;
+  }
+  .category-navbar button {
+    font-size: 14px;
+    padding: 7px 0;
+  }
+  .services-container h2 {
+    font-size: 18px;
+  }
+}
