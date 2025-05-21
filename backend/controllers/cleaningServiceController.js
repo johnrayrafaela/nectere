@@ -3,7 +3,8 @@ const CleaningService = require("../models/CleaningService");
 // Add Cleaning Service
 const addCleaningService = async (req, res) => {
   try {
-    const { name, description, price, category } = req.body;
+    const { name, description, price, category, quantity } = req.body;
+
     const image = req.file ? req.file.filename : null;
 
     const service = new CleaningService({
@@ -11,8 +12,10 @@ const addCleaningService = async (req, res) => {
       description,
       price,
       category,
+      quantity,
       image
     });
+
 
     await service.save();
     res.status(201).json(service);
@@ -45,10 +48,11 @@ const getCleaningService = async (req, res) => {
 // Update Cleaning Service
 const updateCleaningService = async (req, res) => {
   try {
-    const { name, description, price, category } = req.body;
+    const { name, description, price, category, quantity } = req.body;
+
     const image = req.file ? req.file.filename : undefined;
 
-    const updatedData = { name, description, price, category };
+    const updatedData = { name, description, price, category, quantity };
     if (image) updatedData.image = image;
 
     const service = await CleaningService.findByIdAndUpdate(

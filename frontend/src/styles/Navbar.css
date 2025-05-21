@@ -86,11 +86,34 @@
   font-size: 14px;
   font-weight: bold;
 }
+/* Add to Navbar.css */
+.services-dropdown .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #232526;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  z-index: 100;
+  min-width: 160px;
+}
+.services-dropdown .dropdown-item {
+  display: block;
+  padding: 10px 18px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.services-dropdown .dropdown-item:hover {
+  background: #e74c3c;
+  color: #fff;
+}
 
 .logout-btn {
   background-color: #dc3545;
   color: white;
   border: none;
+
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;

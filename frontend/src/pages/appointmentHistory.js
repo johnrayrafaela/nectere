@@ -46,29 +46,42 @@ const AppointmentHistoryPage = () => {
         </div>
       )}
 
-      {bookings.map((booking) => (
-        <div className="booking-card" key={booking._id}>
-          <p><strong>Booked At:</strong> {new Date(booking.createdAt).toLocaleString()}</p>
-          <p><strong>Name:</strong> {booking.firstname} {booking.lastname}</p>
-          <p><strong>Email:</strong> {booking.email}</p>
-          <p><strong>Service:</strong> {booking.serviceId?.name || "N/A"}</p>
-          <p><strong>Shop:</strong> {booking.serviceId?.category || "N/A"}</p> {/* Added category */}
-          <p><strong>Price:</strong> ${booking.serviceId?.price || 0}</p>
-          
-          <p>
-            <strong>Status:</strong>{" "}
-            {booking.status === "Pending" ? (
-              <span className="pending">Pending</span>
-            ) : booking.status === "Accepted" ? (
-              <span className="accepted">Accepted</span>
-            ) : booking.status === "Completed" ? (
-              <span className="completed">Completed</span>
-            ) : (
-              <span className="rejected">Rejected</span>
+      {bookings.map((booking) => {
+        const isH2Go = booking.serviceId?.category === "H2Go";
+        const quantity = isH2Go ? booking.quantity || 1 : 1;
+        const unitPrice = booking.serviceId?.price || 0;
+        const totalPrice = unitPrice * quantity;
+
+        return (
+          <div className="booking-card" key={booking._id}>
+            <p><strong>Booked At:</strong> {new Date(booking.createdAt).toLocaleString()}</p>
+            <p><strong>Name:</strong> {booking.firstname} {booking.lastname}</p>
+            <p><strong>Email:</strong> {booking.email}</p>
+            <p><strong>Service:</strong> {booking.serviceId?.name || "N/A"}</p>
+            <p><strong>Shop:</strong> {booking.serviceId?.category || "N/A"}</p>
+            {isH2Go && (
+              <p>
+                <strong>Quantity:</strong> {quantity}
+              </p>
             )}
-          </p>
-        </div>
-      ))}
+            <p>
+              <strong>{isH2Go ? "Total Price" : "Price"}:</strong> ₱{totalPrice}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              {booking.status === "Pending" ? (
+                <span className="pending">Pending</span>
+              ) : booking.status === "Accepted" ? (
+                <span className="accepted">Accepted</span>
+              ) : booking.status === "Completed" ? (
+                <span className="completed">Completed</span>
+              ) : (
+                <span className="rejected">Rejected</span>
+              )}
+            </p>
+          </div>
+        );
+      })}
     </div>
   );
 };

@@ -14,6 +14,8 @@ exports.createBooking = async (req, res) => {
       email,
       address,
       paymentMethod,
+      quantity // <-- Add this line
+
     } = req.body;
 
     if (
@@ -38,6 +40,8 @@ exports.createBooking = async (req, res) => {
       email,
       address,
       paymentMethod,
+      quantity: quantity || 1
+      
     });
 
     await newBooking.save();

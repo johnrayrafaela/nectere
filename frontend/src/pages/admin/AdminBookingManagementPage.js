@@ -128,7 +128,7 @@ const deleteBooking = async (id) => {
           <option value="All">All Categories</option>
           <option value="FixUp">FixUp</option>
           <option value="H2Go">H2Go</option>
-          <option value="WallFix">WallFix</option>
+          <option value="WallFix & Style">WallFix & Style</option> {/* updated */}
           <option value="PetConnect">PetConnect</option>
         </select>
       </div>
@@ -148,44 +148,54 @@ const deleteBooking = async (id) => {
           </tr>
         </thead>
         <tbody>
-  {filteredBookings.length > 0 ? (
-    filteredBookings.map((booking) => {
-      const user = getUserById(booking.userId);
-      return (
-        <tr key={booking._id}>
-          <td>
-            {user.firstname || ""} {user.lastname || ""}
-          </td>
-          <td>{booking.serviceId?.name || "N/A"}</td>
-          <td>{booking.serviceId?.category || "N/A"}</td>
-          <td>{booking.address}</td>
-          <td style={getStatusStyle(booking.status)}>{booking.status}</td>
-          <td>{booking.paymentMethod}</td>
-          <td>{booking.serviceId?.price ? `₱${booking.serviceId.price}` : "N/A"}</td> {/* Price cell */}
-          <td>{new Date(booking.createdAt).toLocaleString()}</td>
-          <td>
-            {booking.status === "Pending" && (
-              <>
-                <button onClick={() => updateBookingStatus(booking._id, "Accepted")}>Accept</button>
-                <button onClick={() => updateBookingStatus(booking._id, "Rejected")}>Decline</button>
-              </>
-            )}
-            {booking.status === "Accepted" && (
-              <button onClick={() => updateBookingStatus(booking._id, "Completed")}>Done</button>
-            )}
-            <button onClick={() => deleteBooking(booking._id)} style={{ color: "red" }}>Delete</button>
-          </td>
-        </tr>
-      );
-    })
-  ) : (
-    <tr>
-      <td colSpan="9" style={{ textAlign: "center" }}>
-        No bookings found.
-      </td>
-    </tr>
-  )}
-</tbody>
+          {filteredBookings.length > 0 ? (
+            filteredBookings.map((booking) => {
+              const user = getUserById(booking.userId);
+              const isH2Go = booking.serviceId?.category === "H2Go";
+              const quantity = isH2Go ? booking.quantity || 1 : 1;
+              const unitPrice = booking.serviceId?.price || 0;
+              const totalPrice = unitPrice * quantity;
+              return (
+                <tr key={booking._id}>
+                  <td>
+                    {user.firstname || ""} {user.lastname || ""}
+                  </td>
+                  <td>{booking.serviceId?.name || "N/A"}</td>
+                  <td>{booking.serviceId?.category || "N/A"}</td>
+                  <td>{booking.address}</td>
+                  <td style={getStatusStyle(booking.status)}>{booking.status}</td>
+                  <td>{booking.paymentMethod}</td>
+                  <td>
+                    {isH2Go
+                      ? `₱${totalPrice}`
+                      : booking.serviceId?.price
+                      ? `₱${booking.serviceId.price}`
+                      : "N/A"}
+                  </td>
+                  <td>{new Date(booking.createdAt).toLocaleString()}</td>
+                  <td>
+                    {booking.status === "Pending" && (
+                      <>
+                        <button onClick={() => updateBookingStatus(booking._id, "Accepted")}>Accept</button>
+                        <button onClick={() => updateBookingStatus(booking._id, "Rejected")}>Decline</button>
+                      </>
+                    )}
+                    {booking.status === "Accepted" && (
+                      <button onClick={() => updateBookingStatus(booking._id, "Completed")}>Done</button>
+                    )}
+                    <button onClick={() => deleteBooking(booking._id)} style={{ color: "red" }}>Delete</button>
+                  </td>
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan="9" style={{ textAlign: "center" }}>
+                No bookings found.
+              </td>
+            </tr>
+          )}
+        </tbody>
       </table>
     </div>
   );

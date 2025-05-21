@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "../../styles/addservices.css";
 
-const categories = ["FixUp", "H2Go", "PetConnect", "WallFix"];
+const categories = ["FixUp", "H2Go", "PetConnect", "WallFix & Style"];
 
 const AdminDashboard = () => {
   const [services, setServices] = useState([]);

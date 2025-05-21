@@ -1,13 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import "../styles/ServicesPage.css";
+import { useLocation } from "react-router-dom";
 import BookingModal from "../components/BookingModal";
 
 const categoryList = [
   { key: "FixUp", label: "FixUp", className: "fixup" },
   { key: "H2Go", label: "H2Go", className: "h2go" },
   { key: "PetConnect", label: "PetConnect", className: "petconnect" },
-  { key: "WallFix", label: "WallFix", className: "wallfix" },
+  { key: "WallFix & Style", label: "WallFix & Style", className: "wallfix" }, // updated
 ];
 
 const Services = () => {
@@ -27,6 +28,8 @@ const Services = () => {
     paymentMethod: "cash",
   });
 
+  const location = useLocation();
+
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -38,6 +41,14 @@ const Services = () => {
       }));
     }
   }, [user]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const category = params.get("category");
+    if (category && categoryList.some(cat => cat.key === category)) {
+      setSelectedCategory(category);
+    }
+  }, [location.search]);
 
   const fetchServices = async () => {
     try {
@@ -75,7 +86,7 @@ const Services = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleBooking = async (e) => {
+  const handleBooking = async (e, quantity) => {
     e.preventDefault();
     if (!selectedService) {
       alert("No service selected.");
@@ -93,18 +104,27 @@ const Services = () => {
       }
     }
     try {
+      const bookingPayload = {
+        userId: user.id,
+        serviceId: selectedService._id,
+        ...formData,
+      };
+      // Only add quantity if H2Go
+      if (selectedService.category === "H2Go") {
+        bookingPayload.quantity = quantity;
+      }
       const response = await fetch("http://localhost:5000/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          serviceId: selectedService._id,
-          ...formData,
-        }),
+        body: JSON.stringify(bookingPayload),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Booking failed");
-      alert("Service booked successfully!");
+      if (selectedService.category === "H2Go") {
+        alert("Product ordered successfully!");
+      } else {
+        alert("Service booked successfully!");
+      }
       closeBookingForm();
       fetchServices();
     } catch (err) {
@@ -120,39 +140,39 @@ const Services = () => {
         <h3>{selectedCategory} Services</h3>
         <div className="services-list">
           {filteredServices.map((service) => (
-              <div
-                key={service._id}
-                className={`service-card ${
-                  service.category === "FixUp"
-                    ? "fixup"
-                    : service.category === "H2Go"
-                    ? "h2go"
-                    : service.category === "PetConnect"
-                    ? "petconnect"
-                    : service.category === "WallFix"
-                    ? "wallfix"
-                    : ""
-                }`}
+            <div
+              key={service._id}
+              className={`service-card ${
+                service.category === "FixUp"
+                  ? "fixup"
+                  : service.category === "H2Go"
+                  ? "h2go"
+                  : service.category === "PetConnect"
+                  ? "petconnect"
+                  : service.category === "WallFix & Style" // updated
+                  ? "wallfix"
+                  : ""
+              }`}
+            >
+              {service.image && (
+                <img
+                  src={`http://localhost:5000/uploads/${service.image}`}
+                  alt={service.name}
+                  className="service-image"
+                />
+              )}
+              <h3>{service.name}</h3>
+              <p>{service.description}</p>
+              <p>Price: ₱{service.price}</p>
+              <button
+                onClick={() => openBookingForm(service)}
+                disabled={!user || !user.id}
+                title={!user || !user.id ? "Log in to book" : ""}
               >
-                {service.image && (
-                  <img
-                    src={`http://localhost:5000/uploads/${service.image}`}
-                    alt={service.name}
-                    className="service-image"
-                  />
-                )}
-                <h3>{service.name}</h3>
-                <p>{service.description}</p>
-                <p>Price: ₱{service.price}</p>
-                <button
-                  onClick={() => openBookingForm(service)}
-                  disabled={!user || !user.id}
-                  title={!user || !user.id ? "Log in to book" : ""}
-                >
-                  {service.category === "H2Go" ? "Order Now" : "Book Now"}
-                </button>
-              </div>
-            ))}
+                {service.category === "H2Go" ? "Order Now" : "Book Now"}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     );

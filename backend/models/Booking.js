@@ -11,6 +11,7 @@ const bookingSchema = new mongoose.Schema(
     email: String,
     address: String,
     paymentMethod: String,
+    quantity: { type: Number, default: 1 }, 
     // Example schema updates
     status: {
       type: String,

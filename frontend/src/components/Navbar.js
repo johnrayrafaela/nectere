@@ -7,6 +7,8 @@ import "../styles/Navbar.css"; // Import your CSS file for styling
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showCategories, setShowCategories] = useState(false); 
+
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -29,7 +31,23 @@ const Navbar = () => {
         ) : (
           <>
             <Link to="/" className="link boxed-link" onClick={closeMenu}>Home</Link>
-            <Link to="/services" className="link boxed-link" onClick={closeMenu}>Services</Link>
+            {/* Services Dropdown */}
+            <div
+              className="link boxed-link services-dropdown"
+              onMouseEnter={() => setShowCategories(true)}
+              onMouseLeave={() => setShowCategories(false)}
+              style={{ position: "relative" }}
+            >
+              <span>Services</span>
+              {showCategories && (
+                <div className="dropdown-menu">
+                  <Link to="/services?category=FixUp" className="dropdown-item" onClick={closeMenu}>FixUp</Link>
+                  <Link to="/services?category=H2Go" className="dropdown-item" onClick={closeMenu}>H2Go</Link>
+                  <Link to="/services?category=PetConnect" className="dropdown-item" onClick={closeMenu}>PetConnect</Link>
+                  <Link to="/services?category=WallFix%20%26%20Style" className="dropdown-item" onClick={closeMenu}>WallFix & Style</Link>
+                </div>
+              )}
+            </div>
             <Link to="/about" className="link boxed-link" onClick={closeMenu}>About</Link>
             {user && <Link to="/profile" className="link boxed-link" onClick={closeMenu}>View Profile</Link>}
           </>
