@@ -1,9 +1,16 @@
 import { useState, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import FixUpServices from "./FixUpServices";
 import { useNavigate } from "react-router-dom";
-import AuthContext from "../context/AuthContext";  // Ensure this is correct
+import AuthContext from "../context/AuthContext";
 import "../styles/HomPage.css";
+
+// Category color mapping for themed cards
+const categoryColors = {
+  FixUp: "#e74c3c",
+  H2Go: "#2980b9",
+  PetConnect: "#b7986b",
+  "WallFix & Style": "#a2836e",
+};
 
 // Hero images and text setup
 const heroImages = [
@@ -98,9 +105,37 @@ const ArrowIcon = ({ direction = "left" }) => (
   </svg>
 );
 
+// Service categories for "Services We Offer" section
+const serviceCategories = [
+  {
+    key: "FixUp",
+    label: "FixUp",
+    image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=400&q=80",
+    desc: "Automotive repairs, maintenance, and diagnostics.",
+  },
+  {
+    key: "H2Go",
+    label: "H2Go",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    desc: "Mineral water delivery for homes and businesses.",
+  },
+  {
+    key: "PetConnect",
+    label: "PetConnect",
+    image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&q=80",
+    desc: "Pet care, grooming, and supplies.",
+  },
+  {
+    key: "WallFix & Style",
+    label: "WallFix & Style",
+    image: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80",
+    desc: "Furniture repair and home improvement.",
+  },
+];
+
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);  // Ensure this is correct
+  const { user } = useContext(AuthContext);
   const [current, setCurrent] = useState(0);
 
   const nextSlide = () => setCurrent((prev) => (prev + 1) % heroImages.length);
@@ -162,9 +197,68 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section>
-        <FixUpServices previewCount={4} />
+      {/* Services We Offer Section */}
+      <section style={{ padding: "32px 0" }}>
+        <h2 style={{ textAlign: "center", marginBottom: 32, color: "#e74c3c", letterSpacing: 1 }}>
+          Services We Offer
+        </h2>
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "32px",
+          maxWidth: 1200,
+          margin: "0 auto"
+        }}>
+          {serviceCategories.map((cat) => (
+            <div
+              key={cat.key}
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                boxShadow: `0 2px 12px ${categoryColors[cat.key] || "#000"}22`,
+                width: 260,
+                padding: 24,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+                borderTop: `6px solid ${categoryColors[cat.key]}`,
+              }}
+            >
+              <img
+                src={cat.image}
+                alt={cat.label}
+                style={{
+                  width: "100%",
+                  height: 140,
+                  objectFit: "cover",
+                  borderRadius: 12,
+                  marginBottom: 18,
+                  border: `2px solid ${categoryColors[cat.key]}`
+                }}
+              />
+              <h3 style={{ margin: "8px 0 6px 0", color: categoryColors[cat.key] }}>{cat.label}</h3>
+              <p style={{ fontSize: 15, marginBottom: 18, color: "#444" }}>{cat.desc}</p>
+              <button
+                style={{
+                  background: categoryColors[cat.key],
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 20,
+                  padding: "8px 22px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  letterSpacing: 1,
+                  transition: "background 0.2s"
+                }}
+                onClick={() => navigate(`/services?category=${encodeURIComponent(cat.key)}`)}
+              >
+                View Services
+              </button>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Call to Action - Only if user is not logged in */}

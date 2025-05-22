@@ -180,22 +180,11 @@ const Services = () => {
 
   return (
     <div className="services-container">
-      <h2>Our Services</h2>
+      <h2>
+        {selectedCategory ? `${selectedCategory} Services` : "Our Services"}
+      </h2>
       {loading && <p>Loading services...</p>}
       {error && <p className="error">{error}</p>}
-
-      {/* Navbar for Categories */}
-      <nav className="category-navbar">
-        {categoryList.map((cat) => (
-          <button
-            key={cat.key}
-            className={selectedCategory === cat.key ? cat.className : ""}
-            onClick={() => setSelectedCategory(cat.key)}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </nav>
 
       {/* Render Services for Selected Category */}
       {renderServicesByCategory()}

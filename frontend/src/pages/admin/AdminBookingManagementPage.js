@@ -33,28 +33,35 @@ const AdminBookingManagementPage = () => {
     fetchUsers();
   }, []);
 
-  const updateBookingStatus = async (id, status) => {
-  const confirm = window.confirm(`Are you sure you want to ${status.toLowerCase()} this booking?`);
-  if (!confirm) return;
+  const updateBookingStatus = async (id, status, booking) => {
+    // Check if H2Go for custom confirmation text
+    const isH2Go = booking?.serviceId?.category === "H2Go";
+    const actionText = status.toLowerCase();
+    const confirmText = isH2Go
+      ? `Are you sure you want to ${actionText} this order?`
+      : `Are you sure you want to ${actionText} this booking?`;
 
-  try {
-    await axios.put(`http://localhost:5000/api/bookings/update/${id}`, { status });
-    fetchBookings();
-  } catch (error) {
-    console.error("Error updating booking:", error);
-  }
-};
+    const confirm = window.confirm(confirmText);
+    if (!confirm) return;
 
-const deleteBooking = async (id) => {
-  if (!window.confirm("Are you sure you want to delete this booking?")) return;
+    try {
+      await axios.put(`http://localhost:5000/api/bookings/update/${id}`, { status });
+      fetchBookings();
+    } catch (error) {
+      console.error("Error updating booking:", error);
+    }
+  };
 
-  try {
-    await axios.delete(`http://localhost:5000/api/bookings/delete/${id}`);
-    fetchBookings();
-  } catch (error) {
-    console.error("Error deleting booking:", error);
-  }
-};
+  const deleteBooking = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this booking?")) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/bookings/delete/${id}`);
+      fetchBookings();
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+    }
+  };
 
   // Find user by ID helper (memoized to avoid useCallback warning)
   const getUserById = useCallback(
@@ -96,7 +103,7 @@ const deleteBooking = async (id) => {
     switch (status) {
       case "Accepted":
         return { color: "green", fontWeight: "bold" };
-        case "Completed":
+      case "Completed":
         return { color: "green", fontWeight: "bold" };
       case "Rejected":
         return { color: "red", fontWeight: "bold" };
@@ -176,12 +183,12 @@ const deleteBooking = async (id) => {
                   <td>
                     {booking.status === "Pending" && (
                       <>
-                        <button onClick={() => updateBookingStatus(booking._id, "Accepted")}>Accept</button>
-                        <button onClick={() => updateBookingStatus(booking._id, "Rejected")}>Decline</button>
+                        <button onClick={() => updateBookingStatus(booking._id, "Accepted", booking)}>Accept</button>
+                        <button onClick={() => updateBookingStatus(booking._id, "Rejected", booking)}>Decline</button>
                       </>
                     )}
                     {booking.status === "Accepted" && (
-                      <button onClick={() => updateBookingStatus(booking._id, "Completed")}>Done</button>
+                      <button onClick={() => updateBookingStatus(booking._id, "Completed", booking)}>Done</button>
                     )}
                     <button onClick={() => deleteBooking(booking._id)} style={{ color: "red" }}>Delete</button>
                   </td>
