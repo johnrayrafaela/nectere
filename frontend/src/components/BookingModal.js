@@ -67,8 +67,20 @@ const BookingModal = ({
           color: themeColor,
           letterSpacing: "1px"
         }}>
-          SHOP: {selectedService.category}
+          Services: {selectedService.category}
         </p>
+        {/* Show selected shopcategory if available */}
+        {selectedService.shopcategory && (
+          <p style={{
+            textAlign: "center",
+            margin: "0 0 12px 0",
+            fontWeight: "bold",
+            color: "#333",
+            letterSpacing: "1px"
+          }}>
+            SHOP: {selectedService.shopcategory}
+          </p>
+        )}
         {successMsg && (
           <div className="success-message" style={{ color: "green", textAlign: "center", marginBottom: 10 }}>
             {successMsg}

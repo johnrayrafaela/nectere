@@ -168,7 +168,10 @@ const AdminBookingManagementPage = () => {
                     {user.firstname || ""} {user.lastname || ""}
                   </td>
                   <td>{booking.serviceId?.name || "N/A"}</td>
-                  <td>{booking.serviceId?.category || "N/A"}</td>
+                  {/* Show shopcategory here */}
+                  <td>
+                    {booking.shopcategory || booking.serviceId?.shopcategory || "N/A"}
+                  </td>
                   <td>{booking.address}</td>
                   <td style={getStatusStyle(booking.status)}>{booking.status}</td>
                   <td>{booking.paymentMethod}</td>

@@ -58,7 +58,11 @@ const AppointmentHistoryPage = () => {
             <p><strong>Name:</strong> {booking.firstname} {booking.lastname}</p>
             <p><strong>Email:</strong> {booking.email}</p>
             <p><strong>Service:</strong> {booking.serviceId?.name || "N/A"}</p>
-            <p><strong>Shop:</strong> {booking.serviceId?.category || "N/A"}</p>
+            <p><strong>Website:</strong> {booking.serviceId?.category || "N/A"}</p>
+            {/* Show shopcategory if available */}
+            <p>
+              <strong>Shop:</strong> {booking.shopcategory || booking.serviceId?.shopcategory || "N/A"}
+            </p>
             {isH2Go && (
               <p>
                 <strong>Quantity:</strong> {quantity}
