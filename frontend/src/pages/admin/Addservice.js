@@ -2,19 +2,79 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "../../styles/addservices.css";
 
-const categories = ["FixUp", "H2Go", "PetConnect", "WallFix & Style"];
+// Update categories and subcategories to match your backend
+const categories = ["FixUp", "H2Go", "PetConnect", "Go Ride Connect"];
+
+// Subcategory options for each category (all categories now have subcategories)
+const subcategories = {
+  FixUp: [
+    "Oil Change",
+    "Engine Repair",
+    "Under Chassis Repair",
+    "Wirings",
+    "Brakek System",
+    "Engine Cooling System"
+  ],
+  H2Go: ["Water Delivery", "Refill Station", "Purified", "Mineral"],
+  PetConnect: ["Grooming", "Pet Supplies", "Veterinary", "Boarding"],
+  "Go Ride Connect": ["Car Rental", "Motorcycle Rental", "Bike Rental", "Chauffeur Service"],
+};
+
+// Shop categories for each main service category
+const shopCategories = {
+  FixUp: ["Main Garage", "Express Garage"],
+  H2Go: ["Water Hub", "Water Express"],
+  PetConnect: ["Pet Mall", "Pet Express"],
+  "Go Ride Connect": ["Ride Center", "Ride Express"],
+};
 
 const AdminDashboard = () => {
   const [services, setServices] = useState([]);
-  const [newService, setNewService] = useState({ name: "", description: "", price: "", category: "FixUp" });
+  const [newService, setNewService] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category: "FixUp",
+    subcategory: subcategories["FixUp"][0],
+    shopcategory: shopCategories["FixUp"][0],
+  });
   const [imageFile, setImageFile] = useState(null);
   const [editingServiceId, setEditingServiceId] = useState(null);
-  const [editedService, setEditedService] = useState({ name: "", description: "", price: "", category: "FixUp", image: "", imageFile: null, imagePreview: "" });
+  const [editedService, setEditedService] = useState({
+    name: "",
+    description: "",
+    price: "",
+    category: "FixUp",
+    subcategory: subcategories["FixUp"][0],
+    shopcategory: shopCategories["FixUp"][0],
+    image: "",
+    imageFile: null,
+    imagePreview: "",
+  });
   const [selectedCategory, setSelectedCategory] = useState("FixUp");
 
   useEffect(() => {
     fetchServices();
   }, []);
+
+  // Update subcategory and shopcategory when main category changes (for add form)
+  useEffect(() => {
+    setNewService((prev) => ({
+      ...prev,
+      subcategory: subcategories[prev.category][0],
+      shopcategory: shopCategories[prev.category][0],
+    }));
+  }, [newService.category]);
+
+  // Update subcategory and shopcategory when editing category changes (for edit form)
+  useEffect(() => {
+    setEditedService((prev) => ({
+      ...prev,
+      subcategory: subcategories[prev.category][0],
+      shopcategory: shopCategories[prev.category][0],
+    }));
+    // eslint-disable-next-line
+  }, [editedService.category]);
 
   const fetchServices = async () => {
     try {
@@ -33,6 +93,8 @@ const AdminDashboard = () => {
       formData.append("description", newService.description);
       formData.append("price", newService.price);
       formData.append("category", newService.category);
+      formData.append("subcategory", newService.subcategory);
+      formData.append("shopcategory", newService.shopcategory);
       if (imageFile) {
         formData.append("image", imageFile);
       }
@@ -46,7 +108,14 @@ const AdminDashboard = () => {
       });
 
       fetchServices();
-      setNewService({ name: "", description: "", price: "", category: "FixUp" });
+      setNewService({
+        name: "",
+        description: "",
+        price: "",
+        category: "FixUp",
+        subcategory: subcategories["FixUp"][0],
+        shopcategory: shopCategories["FixUp"][0],
+      });
       setImageFile(null);
     } catch (error) {
       console.error("Error adding service:", error);
@@ -72,13 +141,15 @@ const AdminDashboard = () => {
       description: service.description,
       price: service.price,
       category: service.category,
+      subcategory: service.subcategory || subcategories[service.category][0],
+      shopcategory: service.shopcategory || shopCategories[service.category][0],
       image: service.image,
       imageFile: null,
       imagePreview: "",
     });
   };
 
-  // Modified to support image update
+  // Modified to support image, subcategory, and shopcategory update
   const handleUpdateService = async (id) => {
     try {
       const token = localStorage.getItem("token");
@@ -91,6 +162,8 @@ const AdminDashboard = () => {
         formData.append("description", editedService.description);
         formData.append("price", editedService.price);
         formData.append("category", editedService.category);
+        formData.append("subcategory", editedService.subcategory);
+        formData.append("shopcategory", editedService.shopcategory);
         formData.append("image", editedService.imageFile);
         dataToSend = formData;
         config.headers["Content-Type"] = "multipart/form-data";
@@ -137,6 +210,24 @@ const AdminDashboard = () => {
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
                   </select>
+                  {/* Subcategory selection for edit */}
+                  <select
+                    value={editedService.subcategory}
+                    onChange={(e) => setEditedService({ ...editedService, subcategory: e.target.value })}
+                  >
+                    {subcategories[editedService.category].map((subcat) => (
+                      <option key={subcat} value={subcat}>{subcat}</option>
+                    ))}
+                  </select>
+                  {/* Shopcategory selection for edit */}
+                  <select
+                    value={editedService.shopcategory}
+                    onChange={(e) => setEditedService({ ...editedService, shopcategory: e.target.value })}
+                  >
+                    {shopCategories[editedService.category].map((shop) => (
+                      <option key={shop} value={shop}>{shop}</option>
+                    ))}
+                  </select>
                   {/* Image preview and upload */}
                   <div style={{ margin: "10px 0" }}>
                     <img
@@ -173,7 +264,15 @@ const AdminDashboard = () => {
                     alt={service.name}
                     style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px" }}
                   />
-                  <div>{service.name} - {service.description} - ₱{service.price} - <strong>{service.category}</strong></div>
+                  <div>
+                    {service.name} - {service.description} - ₱{service.price} - <strong>{service.category}</strong>
+                    {service.subcategory && (
+                      <span style={{ marginLeft: 8, color: "#888" }}>({service.subcategory})</span>
+                    )}
+                    {service.shopcategory && (
+                      <span style={{ marginLeft: 8, color: "#27ae60" }}>[{service.shopcategory}]</span>
+                    )}
+                  </div>
                   <div>
                     <button onClick={() => handleEditClick(service)}>Edit</button>
                     <button className="delete-btn" onClick={() => handleDeleteService(service._id)}>Delete</button>
@@ -219,6 +318,26 @@ const AdminDashboard = () => {
         >
           {categories.map((cat) => (
             <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+        {/* Subcategory selection for add */}
+        <select
+          value={newService.subcategory}
+          onChange={(e) => setNewService({ ...newService, subcategory: e.target.value })}
+          required
+        >
+          {subcategories[newService.category].map((subcat) => (
+            <option key={subcat} value={subcat}>{subcat}</option>
+          ))}
+        </select>
+        {/* Shopcategory selection for add */}
+        <select
+          value={newService.shopcategory}
+          onChange={(e) => setNewService({ ...newService, shopcategory: e.target.value })}
+          required
+        >
+          {shopCategories[newService.category].map((shop) => (
+            <option key={shop} value={shop}>{shop}</option>
           ))}
         </select>
         <input

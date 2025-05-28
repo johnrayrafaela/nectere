@@ -6,11 +6,13 @@ const CleaningServiceSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   category: {
     type: String,
-    enum: ['FixUp', 'H2Go', 'PetConnect', 'WallFix & Style'],
+    enum: ['FixUp', 'H2Go', 'PetConnect', 'Go Ride Connect'],
     required: true
   },
+  subcategory: { type: String }, // Already present
+  shopcategory: { type: String }, // <-- Add this line for shop category
   image: { type: String },
-  quantity: { type: Number, required: true, default: 1 } // ✅ New field
+  quantity: { type: Number, required: true, default: 1 }
 });
 
 module.exports = mongoose.model("CleaningService", CleaningServiceSchema);

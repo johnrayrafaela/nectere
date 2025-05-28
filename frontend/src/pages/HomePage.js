@@ -9,7 +9,7 @@ const categoryColors = {
   FixUp: "#e74c3c",
   H2Go: "#2980b9",
   PetConnect: "#b7986b",
-  "WallFix & Style": "#a2836e",
+  "Go Ride Connect": "#27ae60", // Updated to a distinct green
 };
 
 // Hero images and text setup
@@ -17,7 +17,7 @@ const heroImages = [
   "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=800&q=80", // FixUp (Car)
   "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80", // H2GO (Mineral Water)
   "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=800&q=80", // PetConnect (Animal)
-  "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=800&q=80", // WallFix (Furniture)
+  "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=800&q=80", // Go Ride Connect (Rental)
 ];
 
 const heroTexts = [
@@ -58,16 +58,16 @@ const heroTexts = [
     desc: "From grooming to pet essentials, we make caring for your furry friends easy and convenient."
   },
   {
-    title: "WALLFIX",
-    subtitle: "Furniture & Home Repairs",
+    title: "GO RIDE CONNECT",
+    subtitle: "Rental Rides & More",
     main: (
       <>
-        EXPERT FURNITURE<br />
-        REPAIR AND HOME<br />
-        IMPROVEMENT.
+        RENTAL RIDES<br />
+        AND TRANSPORT<br />
+        MADE EASY.
       </>
     ),
-    desc: "Restore and enhance your home with skilled furniture repairs and handyman services."
+    desc: "Affordable and convenient ride rentals and transport services for your daily needs."
   },
 ];
 
@@ -126,10 +126,10 @@ const serviceCategories = [
     desc: "Pet care, grooming, and supplies.",
   },
   {
-    key: "WallFix & Style",
-    label: "WallFix & Style",
+    key: "Go Ride Connect",
+    label: "Go Ride Connect",
     image: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80",
-    desc: "Furniture repair and home improvement.",
+    desc: "Rental rides and transport services.",
   },
 ];
 

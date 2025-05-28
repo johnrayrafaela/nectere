@@ -30,27 +30,27 @@ const Navbar = () => {
           <Link to="/admin/*" className="link boxed-link" onClick={closeMenu}>Admin Dashboard</Link>
         ) : (
           <>
-            <Link to="/" className="link boxed-link" onClick={closeMenu}>Home</Link>
-            {/* Services Dropdown */}
-            <div
-              className="link boxed-link services-dropdown"
-              onMouseEnter={() => setShowCategories(true)}
-              onMouseLeave={() => setShowCategories(false)}
-              style={{ position: "relative" }}
-            >
-              <span>Services</span>
-              {showCategories && (
-                <div className="dropdown-menu">
-                  <Link to="/services?category=FixUp" className="dropdown-item" onClick={closeMenu}>FixUp</Link>
-                  <Link to="/services?category=H2Go" className="dropdown-item" onClick={closeMenu}>H2Go</Link>
-                  <Link to="/services?category=PetConnect" className="dropdown-item" onClick={closeMenu}>PetConnect</Link>
-                  <Link to="/services?category=WallFix%20%26%20Style" className="dropdown-item" onClick={closeMenu}>WallFix & Style</Link>
-                </div>
-              )}
-            </div>
-            <Link to="/about" className="link boxed-link" onClick={closeMenu}>About</Link>
-            {user && <Link to="/profile" className="link boxed-link" onClick={closeMenu}>View Profile</Link>}
-          </>
+              <Link to="/" className="link boxed-link" onClick={closeMenu}>Home</Link>
+              {/* Services Dropdown */}
+              <div
+                className="link boxed-link services-dropdown"
+                onMouseEnter={() => setShowCategories(true)}
+                onMouseLeave={() => setShowCategories(false)}
+                style={{ position: "relative" }}
+              >
+                <span>Services</span>
+                {showCategories && (
+                  <div className="dropdown-menu">
+                    <Link to="/services?category=FixUp" className="dropdown-item" onClick={closeMenu}>FixUp</Link>
+                    <Link to="/services?category=H2Go" className="dropdown-item" onClick={closeMenu}>H2Go</Link>
+                    <Link to="/services?category=PetConnect" className="dropdown-item" onClick={closeMenu}>PetConnect</Link>
+                    <Link to="/services?category=Go%20Ride%20Connect" className="dropdown-item" onClick={closeMenu}>Go Ride Connect</Link>
+                  </div>
+                )}
+              </div>
+              <Link to="/about" className="link boxed-link" onClick={closeMenu}>About</Link>
+              {user && <Link to="/profile" className="link boxed-link" onClick={closeMenu}>View Profile</Link>}
+            </>
         )}
       </div>
 
