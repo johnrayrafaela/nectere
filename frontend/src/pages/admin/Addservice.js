@@ -15,7 +15,7 @@ const subcategories = {
     "Brake System",
     "Engine Cooling System"
   ],
-  H2Go: ["Water Delivery", "Refill Station", "Purified", "Mineral"],
+  H2Go: ["Water Delivery", "Refill Station", "Purified", "Minerals"],
   PetConnect: ["Grooming", "Pet Supplies", "Veterinary", "Boarding"],
   "Go Ride Connect": ["Car Rental", "Motorcycle Rental", "Bike Rental", "Chauffeur Service"],
 };

@@ -17,6 +17,20 @@ const shopCategories = {
   PetConnect: ["Pet Mall", "Pet Express"],
   "Go Ride Connect": ["Ride Center", "Ride Express"],
 };
+const allSubcategories = {
+  FixUp: [
+    "Oil Change",
+    "Engine Repair",
+    "Under Chassis Repair",
+    "Wirings",
+    "Brake System",
+    "Engine Cooling System"
+  ],
+  H2Go: ["Water Delivery", "Refill Station", "Purified", "Minerals"],
+  PetConnect: ["Grooming", "Pet Supplies", "Veterinary", "Boarding"],
+  "Go Ride Connect": ["Car Rental", "Motorcycle Rental", "Bike Rental", "Chauffeur Service"],
+};
+
 
 const Services = () => {
   const { user } = useContext(AuthContext);
@@ -146,78 +160,87 @@ const Services = () => {
     }
   };
 
-  // Group services by subcategory and display them with a heading
-  const renderServicesByCategory = () => {
-    // Filter by category and shop
-    const filteredServices = services.filter(
-      (service) =>
-        service.category === selectedCategory &&
-        (!selectedShop || service.shopcategory === selectedShop)
-    );
+          // Group services by subcategory and display them with a heading
+          const renderServicesByCategory = () => {
+          // Filter by category and shop
+          const filteredServices = services.filter(
+            (service) =>
+              service.category === selectedCategory &&
+              (!selectedShop || service.shopcategory === selectedShop)
+          );
 
-    // Group by subcategory
-    const grouped = {};
-    filteredServices.forEach((service) => {
-      const subcat = service.subcategory || "Uncategorized";
-      if (!grouped[subcat]) grouped[subcat] = [];
-      grouped[subcat].push(service);
-    });
+          // Group by subcategory
+          const grouped = {};
+          filteredServices.forEach((service) => {
+            const subcat = service.subcategory || "Uncategorized";
+            if (!grouped[subcat]) grouped[subcat] = [];
+            grouped[subcat].push(service);
+          });
 
-    return (
-      <div>
-        <h3>{selectedCategory} Services</h3>
-        {Object.keys(grouped).length === 0 && (
-          <p style={{ color: "#888" }}>No services available for this shop.</p>
-        )}
-        {Object.keys(grouped).map((subcat) => (
-          <div key={subcat} style={{ marginBottom: 32 }}>
-            <h4 style={{ color: "#e74c3c", 
-                margin: "18px 0 12px 0", 
-                fontSize: "1.6rem",
-                fontWeight: "bold"}}>
-              {subcat}
-            </h4>
-            <div className="services-list">
-              {grouped[subcat].map((service) => (
-                <div
-                  key={service._id}
-                  className={`service-card ${
-                    service.category === "FixUp"
-                      ? "fixup"
-                      : service.category === "H2Go"
-                      ? "h2go"
-                      : service.category === "PetConnect"
-                      ? "petconnect"
-                      : service.category === "Go Ride Connect"
-                      ? "goride"
-                      : ""
-                  }`}
-                >
-                  {service.image && (
-                    <img
-                      src={`http://localhost:5000/uploads/${service.image}`}
-                      alt={service.name}
-                      className="service-image"
-                    />
-                  )}
-                  <h3>{service.name}</h3>
-                  <p>{service.description}</p>
-                  <p>Price: ₱{service.price}</p>
-                  <button
-                    onClick={() => openBookingForm(service)}
-                    disabled={!user || !user.id}
-                    title={!user || !user.id ? "Log in to book" : ""}
+          // Use allSubcategories for the selected category
+          const subcats = allSubcategories[selectedCategory] || ["Uncategorized"];
+
+          return (
+            <div>
+              <h3>{selectedCategory} Services</h3>
+              {subcats.map((subcat) => (
+                <div key={subcat} style={{ marginBottom: 32 }}>
+                  <h4
+                    style={{
+                      color: "#e74c3c",
+                      margin: "18px 0 12px 0",
+                      fontSize: "1.6rem",
+                      fontWeight: "bold",
+                    }}
                   >
-                    {service.category === "H2Go" ? "Order Now" : "Book Now"}
-                  </button>
+                    {subcat}
+                  </h4>
+                  <div className="services-list">
+                    {grouped[subcat] && grouped[subcat].length > 0 ? (
+                      grouped[subcat].map((service) => (
+                        <div
+                          key={service._id}
+                          className={`service-card ${
+                            service.category === "FixUp"
+                              ? "fixup"
+                              : service.category === "H2Go"
+                              ? "h2go"
+                              : service.category === "PetConnect"
+                              ? "petconnect"
+                              : service.category === "Go Ride Connect"
+                              ? "goride"
+                              : ""
+                          }`}
+                        >
+                          {service.image && (
+                            <img
+                              src={`http://localhost:5000/uploads/${service.image}`}
+                              alt={service.name}
+                              className="service-image"
+                            />
+                          )}
+                          <h3>{service.name}</h3>
+                          <p>{service.description}</p>
+                          <p>Price: ₱{service.price}</p>
+                          <button
+                            onClick={() => openBookingForm(service)}
+                            disabled={!user || !user.id}
+                            title={!user || !user.id ? "Log in to book" : ""}
+                          >
+                            {service.category === "H2Go" ? "Order Now" : "Book Now"}
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <p style={{ color: "#888" }}>No services available in this subcategory.</p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
-        ))}
-      </div>
-    );
-  };
+          );
+        };
+
 
   return (
     <div className="services-container">
