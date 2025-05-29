@@ -12,7 +12,7 @@ const categoryList = [
 ];
 
 const shopCategories = {
-  FixUp: ["", "Express Garage"],
+  FixUp: ["Main Garage", "Express Garage"],
   H2Go: ["Water Hub", "Water Express"],
   PetConnect: ["Pet Mall", "Pet Express"],
   "Go Ride Connect": ["Ride Center", "Ride Express"],
