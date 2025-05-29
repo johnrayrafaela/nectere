@@ -12,7 +12,7 @@ const subcategories = {
     "Engine Repair",
     "Under Chassis Repair",
     "Wirings",
-    "Brakek System",
+    "Brake System",
     "Engine Cooling System"
   ],
   H2Go: ["Water Delivery", "Refill Station", "Purified", "Mineral"],

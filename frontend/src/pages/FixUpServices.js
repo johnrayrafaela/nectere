@@ -12,7 +12,7 @@ const categoryList = [
 ];
 
 const shopCategories = {
-  FixUp: ["Main Garage", "Express Garage"],
+  FixUp: ["", "Express Garage"],
   H2Go: ["Water Hub", "Water Express"],
   PetConnect: ["Pet Mall", "Pet Express"],
   "Go Ride Connect": ["Ride Center", "Ride Express"],
@@ -171,7 +171,10 @@ const Services = () => {
         )}
         {Object.keys(grouped).map((subcat) => (
           <div key={subcat} style={{ marginBottom: 32 }}>
-            <h4 style={{ color: "#e74c3c", margin: "18px 0 12px 0" }}>
+            <h4 style={{ color: "#e74c3c", 
+                margin: "18px 0 12px 0", 
+                fontSize: "1.6rem",
+                fontWeight: "bold"}}>
               {subcat}
             </h4>
             <div className="services-list">
