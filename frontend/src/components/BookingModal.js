@@ -59,7 +59,10 @@ const BookingModal = ({
   return (
     <div className="booking-modal">
       <div className="booking-form" style={{ borderTop: `6px solid ${themeColor}` }}>
-        <h3 style={{ color: themeColor }}>Book {selectedService.name}</h3>
+        <h3 style={{ color: themeColor }}>
+          {selectedService.category === "H2Go" ? "Order" : "Book"} {selectedService.name}
+        </h3>
+
         <p style={{
           textAlign: "center",
           margin: "0 0 12px 0",
