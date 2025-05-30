@@ -80,10 +80,15 @@
   background: linear-gradient(90deg, #a2836e 80%, #e0c3a3 100%);
   color: #4b3a2f;
 }
+.category-navbar .goride {
+  background: linear-gradient(90deg, #27ae60 80%, #2ecc71 100%);
+  color: #fff;
+}
 .category-navbar .fixup,
 .category-navbar .h2go,
 .category-navbar .petconnect,
-.category-navbar .wallfix {
+.category-navbar .wallfix,
+.category-navbar .goride {
   font-weight: bold;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
 }
@@ -98,6 +103,9 @@
 }
 .category-navbar .wallfix:hover {
   background: linear-gradient(90deg, #e0c3a3 80%, #a2836e 100%);
+}
+.category-navbar .goride:hover {
+  background: linear-gradient(90deg, #2ecc71 80%, #27ae60 100%);
 }
 
 /* Services list */
@@ -149,21 +157,13 @@
   -webkit-box-orient: vertical;
 }
 
-
-
-
 /* Remove background gradients from themed cards */
 .service-card.fixup,
 .service-card.h2go,
 .service-card.petconnect,
-.service-card.wallfix {
+.service-card.wallfix,
+.service-card.goride {
   background: #fff;
-}
-
-/* Text color for all cards */
-.service-card h3,
-.service-card p {
-  color: #333;
 }
 
 /* Themed buttons */
@@ -173,7 +173,6 @@
 }
 .service-card.fixup button:hover {
   background-color: #c0392b;
-  color: #fff;
 }
 
 .service-card.h2go button {
@@ -182,7 +181,6 @@
 }
 .service-card.h2go button:hover {
   background-color: #2471a3;
-  color: #fff;
 }
 
 .service-card.petconnect button {
@@ -191,7 +189,6 @@
 }
 .service-card.petconnect button:hover {
   background-color: #a0824a;
-  color: #fff;
 }
 
 .service-card.wallfix button {
@@ -200,7 +197,14 @@
 }
 .service-card.wallfix button:hover {
   background-color: #7e614b;
+}
+
+.service-card.goride button {
+  background-color: #27ae60;
   color: #fff;
+}
+.service-card.goride button:hover {
+  background-color: #1e8449;
 }
 
 /* Disabled button */
@@ -209,15 +213,40 @@
   cursor: not-allowed;
 }
 
+
+
+/* Distinct border and shadow themes */
+.service-card.fixup {
+  border: 2px solid #e74c3c;
+  box-shadow: 0 4px 10px rgba(231, 76, 60, 0.2);
+}
+.service-card.h2go {
+  border: 2px solid #3498db;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+}
+.service-card.petconnect {
+  border: 2px solid #b7986b;
+  box-shadow: 0 4px 10px rgba(183, 152, 107, 0.2);
+}
+.service-card.wallfix {
+  border: 2px solid #a2836e;
+  box-shadow: 0 4px 10px rgba(162, 131, 110, 0.2);
+}
+.service-card.goride {
+  border: 2px solid #27ae60;
+  box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2);
+}
+
+
 /* Service image */
 .service-image {
   width: 250px;
-  height: 180px;              /* Fixed height */
-  max-width: 100%;            /* Ensures it doesn't overflow card */
-  object-fit: cover;          /* Ensures image fills area and is cropped if needed */
+  height: 180px;
+  max-width: 100%;
+  object-fit: cover;
   border-radius: 8px;
   margin-bottom: 12px;
-  background: #f2f2f2;        /* Optional: subtle bg for non-square images */
+  background: #f2f2f2;
   display: block;
 }
 

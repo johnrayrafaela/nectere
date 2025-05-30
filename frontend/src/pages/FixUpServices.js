@@ -4,6 +4,11 @@ import "../styles/ServicesPage.css";
 import { useLocation } from "react-router-dom";
 import BookingModal from "../components/BookingModal";
 
+import fixupLogo from "../assets/images/FreshStart.png";
+import h2goLogo from "../assets/images/FreshStart.png";
+import petconnectLogo from "../assets/images/FreshStart.png";
+import gorideLogo from "../assets/images/FreshStart.png";
+
 const categoryList = [
   { key: "FixUp", label: "FixUp", className: "fixup" },
   { key: "H2Go", label: "H2Go", className: "h2go" },
@@ -17,6 +22,7 @@ const shopCategories = {
   PetConnect: ["Pet Mall", "Pet Express"],
   "Go Ride Connect": ["Ride Center", "Ride Express"],
 };
+
 const allSubcategories = {
   FixUp: [
     "Oil Change",
@@ -24,13 +30,24 @@ const allSubcategories = {
     "Under Chassis Repair",
     "Wirings",
     "Brake System",
-    "Engine Cooling System"
+    "Engine Cooling System",
   ],
   H2Go: ["Water Delivery", "Refill Station", "Purified", "Minerals"],
   PetConnect: ["Grooming", "Pet Supplies", "Veterinary", "Boarding"],
-  "Go Ride Connect": ["Car Rental", "Motorcycle Rental", "Bike Rental", "Chauffeur Service"],
+  "Go Ride Connect": [
+    "Car Rental",
+    "Motorcycle Rental",
+    "Bike Rental",
+    "Chauffeur Service",
+  ],
 };
 
+const categoryLogos = {
+  FixUp: fixupLogo,
+  H2Go: h2goLogo,
+  PetConnect: petconnectLogo,
+  "Go Ride Connect": gorideLogo,
+};
 
 const Services = () => {
   const { user } = useContext(AuthContext);
@@ -40,7 +57,8 @@ const Services = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("FixUp");
-  const [selectedShop, setSelectedShop] = useState(""); // <-- Shop selection
+  const [selectedShop, setSelectedShop] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState(""); // New state for subcategory filter
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -67,22 +85,22 @@ const Services = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const category = params.get("category");
-    if (category && categoryList.some(cat => cat.key === category)) {
+    if (category && categoryList.some((cat) => cat.key === category)) {
       setSelectedCategory(category);
     }
   }, [location.search]);
 
   useEffect(() => {
-    // Reset shop when category changes
     setSelectedShop(shopCategories[selectedCategory][0]);
+    setSelectedSubcategory(""); // Reset subcategory filter on category change
   }, [selectedCategory]);
 
   const fetchServices = async () => {
     try {
-      const serviceRes = await fetch("http://localhost:5000/api/cleaning-services");
-      if (!serviceRes.ok) throw new Error("Failed to fetch services");
-      const servicesData = await serviceRes.json();
-      setServices(servicesData);
+      const res = await fetch("http://localhost:5000/api/cleaning-services");
+      if (!res.ok) throw new Error("Failed to fetch services");
+      const data = await res.json();
+      setServices(data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -115,43 +133,39 @@ const Services = () => {
 
   const handleBooking = async (e, quantity) => {
     e.preventDefault();
-    if (!selectedService) {
-      alert("No service selected.");
-      return;
+    if (!selectedService) return alert("No service selected.");
+    if (!user || !user.id) return alert("You must be logged in to book a service.");
+
+    const required = ["firstname", "lastname", "phonenumber", "email", "address"];
+    for (const field of required) {
+      if (!formData[field]) return alert(`Please fill out the ${field} field.`);
     }
-    if (!user || !user.id) {
-      alert("You must be logged in to book a service.");
-      return;
-    }
-    const requiredFields = ["firstname", "lastname", "phonenumber", "email", "address"];
-    for (const field of requiredFields) {
-      if (!formData[field]) {
-        alert(`Please fill out the ${field} field.`);
-        return;
-      }
-    }
+
     try {
       const bookingPayload = {
         userId: user.id,
         serviceId: selectedService._id,
         ...formData,
-        shopcategory: selectedShop, // <-- Include shopcategory in booking
+        shopcategory: selectedShop,
       };
       if (selectedService.category === "H2Go") {
         bookingPayload.quantity = quantity;
       }
-      const response = await fetch("http://localhost:5000/api/bookings", {
+
+      const res = await fetch("http://localhost:5000/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingPayload),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Booking failed");
-      if (selectedService.category === "H2Go") {
-        alert("Product ordered successfully!");
-      } else {
-        alert("Service booked successfully!");
-      }
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Booking failed");
+
+      alert(
+        selectedService.category === "H2Go"
+          ? "Product ordered successfully!"
+          : "Service booked successfully!"
+      );
       closeBookingForm();
       fetchServices();
     } catch (err) {
@@ -160,95 +174,150 @@ const Services = () => {
     }
   };
 
-          // Group services by subcategory and display them with a heading
-          const renderServicesByCategory = () => {
-          // Filter by category and shop
-          const filteredServices = services.filter(
-            (service) =>
-              service.category === selectedCategory &&
-              (!selectedShop || service.shopcategory === selectedShop)
-          );
+  // Subcategories to show in dropdown (based on selectedCategory)
+  const subcategoriesForDropdown = allSubcategories[selectedCategory] || [];
 
-          // Group by subcategory
-          const grouped = {};
-          filteredServices.forEach((service) => {
-            const subcat = service.subcategory || "Uncategorized";
-            if (!grouped[subcat]) grouped[subcat] = [];
-            grouped[subcat].push(service);
-          });
+  const renderServicesByCategory = () => {
+    const filtered = services.filter(
+      (s) =>
+        s.category === selectedCategory &&
+        (!selectedShop || s.shopcategory === selectedShop) &&
+        (selectedSubcategory ? s.subcategory === selectedSubcategory : true)
+    );
 
-          // Use allSubcategories for the selected category
-          const subcats = allSubcategories[selectedCategory] || ["Uncategorized"];
+    // Group by subcategory
+    const grouped = {};
+    filtered.forEach((s) => {
+      const subcat = s.subcategory || "Uncategorized";
+      if (!grouped[subcat]) grouped[subcat] = [];
+      grouped[subcat].push(s);
+    });
 
-          return (
-            <div>
-              <h3>{selectedCategory} Services</h3>
-              {subcats.map((subcat) => (
-                <div key={subcat} style={{ marginBottom: 32 }}>
-                  <h4
-                    style={{
-                      color: "#e74c3c",
-                      margin: "18px 0 12px 0",
-                      fontSize: "1.6rem",
-                      fontWeight: "bold",
-                    }}
+    // If a subcategory is selected, show only that group; else show all subcats in the category
+    const subcats = selectedSubcategory
+      ? [selectedSubcategory]
+      : allSubcategories[selectedCategory] || ["Uncategorized"];
+
+    return (
+      <div>
+        <h3>{selectedCategory} Services</h3>
+
+        {/* Subcategory dropdown filter */}
+        <div style={{ marginBottom: "20px" }}>
+          <label
+            htmlFor="subcategory-filter"
+            style={{ marginRight: "10px", fontWeight: "bold", color: "#fff" }}
+          >
+            Filter by category:
+          </label>
+          <select
+            id="subcategory-filter"
+            value={selectedSubcategory}
+            onChange={(e) => setSelectedSubcategory(e.target.value)}
+            style={{ padding: "6px", fontSize: "1rem" }}
+          >
+            <option value="">All</option>
+            {subcategoriesForDropdown.map((subcat) => (
+              <option key={subcat} value={subcat}>
+                {subcat}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {subcats.map((subcat) => (
+          <div key={subcat} style={{ marginBottom: 32 }}>
+            <h4
+              style={{
+                color: "#e74c3c",
+                margin: "18px 0 12px 0",
+                fontSize: "1.6rem",
+                fontWeight: "bold",
+              }}
+            >
+              {subcat}
+            </h4>
+            <div className="services-list">
+              {grouped[subcat]?.length > 0 ? (
+                grouped[subcat].map((service) => (
+                  <div
+                    key={service._id}
+                    className={`service-card ${
+                      service.category === "FixUp"
+                        ? "fixup"
+                        : service.category === "H2Go"
+                        ? "h2go"
+                        : service.category === "PetConnect"
+                        ? "petconnect"
+                        : service.category === "Go Ride Connect"
+                        ? "goride"
+                        : ""
+                    }`}
                   >
-                    {subcat}
-                  </h4>
-                  <div className="services-list">
-                    {grouped[subcat] && grouped[subcat].length > 0 ? (
-                      grouped[subcat].map((service) => (
-                        <div
-                          key={service._id}
-                          className={`service-card ${
-                            service.category === "FixUp"
-                              ? "fixup"
-                              : service.category === "H2Go"
-                              ? "h2go"
-                              : service.category === "PetConnect"
-                              ? "petconnect"
-                              : service.category === "Go Ride Connect"
-                              ? "goride"
-                              : ""
-                          }`}
-                        >
-                          {service.image && (
-                            <img
-                              src={`http://localhost:5000/uploads/${service.image}`}
-                              alt={service.name}
-                              className="service-image"
-                            />
-                          )}
-                          <h3>{service.name}</h3>
-                          <p>{service.description}</p>
-                          <p>Price: ₱{service.price}</p>
-                          <button
-                            onClick={() => openBookingForm(service)}
-                            disabled={!user || !user.id}
-                            title={!user || !user.id ? "Log in to book" : ""}
-                          >
-                            {service.category === "H2Go" ? "Order Now" : "Book Now"}
-                          </button>
-                        </div>
-                      ))
-                    ) : (
-                      <p style={{ color: "#888" }}>No services available in this subcategory.</p>
+                    {service.image && (
+                      <img
+                        src={`http://localhost:5000/uploads/${service.image}`}
+                        alt={service.name}
+                        className="service-image"
+                      />
                     )}
+                    <h3>{service.name}</h3>
+                    <p>{service.description}</p>
+                    <p>Price: ₱{service.price}</p>
+                    <button
+                      onClick={() => openBookingForm(service)}
+                      disabled={!user || !user.id}
+                      title={!user || !user.id ? "Log in to book" : ""}
+                    >
+                      {service.category === "H2Go" ? "Order Now" : "Book Now"}
+                    </button>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p style={{ color: "#888" }}>
+                  No services available in this subcategory.
+                </p>
+              )}
             </div>
-          );
-        };
-
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="services-container">
-      <h2>
-        {selectedCategory ? `${selectedCategory} Services` : "Our Services"}
-      </h2>
+      {/* Logo and Title Side-by-Side */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center", // centers horizontally
+          gap: "10px",
+          marginBottom: "20px",
+        }}
+      >
+        {categoryLogos[selectedCategory] && (
+          <img
+            src={categoryLogos[selectedCategory]}
+            alt={`${selectedCategory} Logo`}
+            style={{ maxWidth: "120px", height: "auto" }}
+          />
+        )}
+        <h2 style={{ margin: 0 }}>
+          {selectedCategory ? `${selectedCategory} Services` : "Our Services"}
+        </h2>
+      </div>
+
       {/* Shop Category Navbar */}
-      <div style={{ margin: "16px 0", display: "flex", gap: "10px", flexWrap: "wrap" }}>
+      <div
+        style={{
+          margin: "16px 0",
+          display: "flex",
+          gap: "10px",
+          flexWrap: "wrap",
+        }}
+      >
         {shopCategories[selectedCategory].map((shop) => (
           <button
             key={shop}
@@ -256,12 +325,13 @@ const Services = () => {
             style={{
               padding: "7px 18px",
               borderRadius: "20px",
-              border: selectedShop === shop ? "2px solid #e74c3c" : "1px solid #ccc",
+              border:
+                selectedShop === shop ? "2px solid #e74c3c" : "1px solid #ccc",
               background: selectedShop === shop ? "#e74c3c" : "#fff",
               color: selectedShop === shop ? "#fff" : "#333",
               fontWeight: 600,
               cursor: "pointer",
-              transition: "all 0.2s"
+              transition: "all 0.2s",
             }}
             onClick={() => setSelectedShop(shop)}
           >
@@ -269,10 +339,10 @@ const Services = () => {
           </button>
         ))}
       </div>
+
       {loading && <p>Loading services...</p>}
       {error && <p className="error">{error}</p>}
 
-      {/* Render Services for Selected Category and Shop */}
       {renderServicesByCategory()}
 
       {showForm && selectedService && (
