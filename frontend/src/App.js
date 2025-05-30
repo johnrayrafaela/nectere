@@ -16,10 +16,12 @@ import AdminProfilePage from "./pages/Adminprofile";
 import EmployeeLoginPage from "./pages/EmployeeLoginPage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import FixUpServices from "./pages/FixUpServices";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="main-container">
         <AuthProvider>
           <Navbar />
