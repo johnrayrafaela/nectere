@@ -5,7 +5,7 @@ import "../../styles/addservices.css";
 // Update categories and subcategories to match your backend
 const categories = ["FixUp", "H2Go", "PetConnect", "Go Ride Connect"];
 
-// Subcategory options for each category (all categories now have subcategories)
+// Subcategory options for each category (Go Ride Connect has no subcategories)
 const subcategories = {
   FixUp: [
     "Oil Change",
@@ -17,15 +17,15 @@ const subcategories = {
   ],
   H2Go: ["Water Delivery", "Refill Station", "Purified", "Minerals"],
   PetConnect: ["Grooming", "Pet Supplies", "Veterinary", "Boarding"],
-  "Go Ride Connect": ["Car Rental", "Motorcycle Rental", "Bike Rental", "Chauffeur Service"],
+  "Go Ride Connect": [],
 };
 
 // Shop categories for each main service category
 const shopCategories = {
-  FixUp: ["Main Garage", "Express Garage"],
-  H2Go: ["Water Hub", "Water Express"],
-  PetConnect: ["Pet Mall", "Pet Express"],
-  "Go Ride Connect": ["Ride Center", "Ride Express"],
+  FixUp: ["KEN", "KJK"],
+  H2Go: ["AQUA BEA WATER REFILLING STATION", "ABC WATER REFILLING STATION"],
+  PetConnect: ["PET HUB", "AKO SA E ASK UNSA NI NGA PETSHOP"],
+  "Go Ride Connect": ["CHARMZKRYLE RENT A CAR", "YUKIMURA RENTAL CARS"],
 };
 
 const AdminDashboard = () => {
@@ -93,7 +93,10 @@ const AdminDashboard = () => {
       formData.append("description", newService.description);
       formData.append("price", newService.price);
       formData.append("category", newService.category);
-      formData.append("subcategory", newService.subcategory);
+      // Only append subcategory if not Go Ride Connect
+      if (newService.category !== "Go Ride Connect") {
+        formData.append("subcategory", newService.subcategory);
+      }
       formData.append("shopcategory", newService.shopcategory);
       if (imageFile) {
         formData.append("image", imageFile);
@@ -162,7 +165,10 @@ const AdminDashboard = () => {
         formData.append("description", editedService.description);
         formData.append("price", editedService.price);
         formData.append("category", editedService.category);
-        formData.append("subcategory", editedService.subcategory);
+        // Only append subcategory if not Go Ride Connect
+        if (editedService.category !== "Go Ride Connect") {
+          formData.append("subcategory", editedService.subcategory);
+        }
         formData.append("shopcategory", editedService.shopcategory);
         formData.append("image", editedService.imageFile);
         dataToSend = formData;
@@ -210,15 +216,17 @@ const AdminDashboard = () => {
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
                   </select>
-                  {/* Subcategory selection for edit */}
-                  <select
-                    value={editedService.subcategory}
-                    onChange={(e) => setEditedService({ ...editedService, subcategory: e.target.value })}
-                  >
-                    {subcategories[editedService.category].map((subcat) => (
-                      <option key={subcat} value={subcat}>{subcat}</option>
-                    ))}
-                  </select>
+                  {/* Subcategory selection for edit (hide for Go Ride Connect) */}
+                  {editedService.category !== "Go Ride Connect" && (
+                    <select
+                      value={editedService.subcategory}
+                      onChange={(e) => setEditedService({ ...editedService, subcategory: e.target.value })}
+                    >
+                      {subcategories[editedService.category].map((subcat) => (
+                        <option key={subcat} value={subcat}>{subcat}</option>
+                      ))}
+                    </select>
+                  )}
                   {/* Shopcategory selection for edit */}
                   <select
                     value={editedService.shopcategory}
@@ -320,16 +328,18 @@ const AdminDashboard = () => {
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>
-        {/* Subcategory selection for add */}
-        <select
-          value={newService.subcategory}
-          onChange={(e) => setNewService({ ...newService, subcategory: e.target.value })}
-          required
-        >
-          {subcategories[newService.category].map((subcat) => (
-            <option key={subcat} value={subcat}>{subcat}</option>
-          ))}
-        </select>
+        {/* Subcategory selection for add (hide for Go Ride Connect) */}
+        {newService.category !== "Go Ride Connect" && (
+          <select
+            value={newService.subcategory}
+            onChange={(e) => setNewService({ ...newService, subcategory: e.target.value })}
+            required
+          >
+            {subcategories[newService.category].map((subcat) => (
+              <option key={subcat} value={subcat}>{subcat}</option>
+            ))}
+          </select>
+        )}
         {/* Shopcategory selection for add */}
         <select
           value={newService.shopcategory}

@@ -1,9 +1,20 @@
+// controllers/cleaningServiceController.js
+
 const CleaningService = require("../models/CleaningService");
 
 // Add Cleaning Service
 const addCleaningService = async (req, res) => {
   try {
-    const { name, description, price, category, quantity, subcategory, shopcategory } = req.body; // <-- Add shopcategory
+    const {
+      name,
+      description,
+      price,
+      category,
+      quantity,
+      subcategory,
+      shopcategory,
+      availability, // <-- can be provided or default to true
+    } = req.body;
 
     const image = req.file ? req.file.filename : null;
 
@@ -14,8 +25,9 @@ const addCleaningService = async (req, res) => {
       category,
       quantity,
       subcategory,
-      shopcategory, // <-- Add shopcategory
-      image
+      shopcategory,
+      image,
+      availability: availability !== undefined ? availability : true,
     });
 
     await service.save();
@@ -49,11 +61,30 @@ const getCleaningService = async (req, res) => {
 // Update Cleaning Service
 const updateCleaningService = async (req, res) => {
   try {
-    const { name, description, price, category, quantity, subcategory, shopcategory } = req.body; // <-- Add shopcategory
+    const {
+      name,
+      description,
+      price,
+      category,
+      quantity,
+      subcategory,
+      shopcategory,
+      availability, // <-- allow updating availability manually if needed
+    } = req.body;
 
     const image = req.file ? req.file.filename : undefined;
 
-    const updatedData = { name, description, price, category, quantity, subcategory, shopcategory }; // <-- Add shopcategory
+    const updatedData = {
+      name,
+      description,
+      price,
+      category,
+      quantity,
+      subcategory,
+      shopcategory,
+      availability: availability !== undefined ? availability : undefined,
+    };
+
     if (image) updatedData.image = image;
 
     const service = await CleaningService.findByIdAndUpdate(

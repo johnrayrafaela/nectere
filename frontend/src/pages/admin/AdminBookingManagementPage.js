@@ -1,6 +1,9 @@
+// frontend/src/pages/AdminBookingManagementPage.jsx
+
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import "../../styles/AdminBookingManagementPage.css";
+
 const AdminBookingManagementPage = () => {
   const [bookings, setBookings] = useState([]);
   const [users, setUsers] = useState([]);
@@ -34,15 +37,17 @@ const AdminBookingManagementPage = () => {
   }, []);
 
   const updateBookingStatus = async (id, status, booking) => {
-    // Check if H2Go for custom confirmation text
     const isH2Go = booking?.serviceId?.category === "H2Go";
+    const isPetConnect = booking?.serviceId?.category === "PetConnect";
+    const isGoRide = booking?.serviceId?.category === "Go Ride Connect";
     const actionText = status.toLowerCase();
-    const confirmText = isH2Go
-      ? `Are you sure you want to ${actionText} this order?`
-      : `Are you sure you want to ${actionText} this booking?`;
 
-    const confirm = window.confirm(confirmText);
-    if (!confirm) return;
+    let confirmText = `Are you sure you want to ${actionText} this booking?`;
+    if (isH2Go || isPetConnect || isGoRide) {
+      confirmText = `Are you sure you want to ${actionText} this order?`;
+    }
+
+    if (!window.confirm(confirmText)) return;
 
     try {
       await axios.put(`http://localhost:5000/api/bookings/update/${id}`, { status });
@@ -63,33 +68,27 @@ const AdminBookingManagementPage = () => {
     }
   };
 
-  // Find user by ID helper (memoized to avoid useCallback warning)
   const getUserById = useCallback(
     (userId) => users.find((u) => u._id === (userId?._id || userId)) || {},
     [users]
   );
 
-  // useCallback to avoid eslint warning about filterBookings dependency
   const filterBookings = useCallback(() => {
     let results = [...bookings];
 
     if (categoryFilter !== "All") {
-      results = results.filter(
-        (b) => b.serviceId?.category === categoryFilter
-      );
+      results = results.filter((b) => b.serviceId?.category === categoryFilter);
     }
 
     if (searchQuery.trim() !== "") {
       const q = searchQuery.toLowerCase();
-      results = results.filter(
-        (b) => {
-          const user = getUserById(b.userId);
-          return (
-            `${user.firstname || ""} ${user.lastname || ""}`.toLowerCase().includes(q) ||
-            (b.serviceId?.name || "").toLowerCase().includes(q)
-          );
-        }
-      );
+      results = results.filter((b) => {
+        const user = getUserById(b.userId);
+        return (
+          `${user.firstname || ""} ${user.lastname || ""}`.toLowerCase().includes(q) ||
+          (b.serviceId?.name || "").toLowerCase().includes(q)
+        );
+      });
     }
 
     setFilteredBookings(results);
@@ -102,7 +101,6 @@ const AdminBookingManagementPage = () => {
   const getStatusStyle = (status) => {
     switch (status) {
       case "Accepted":
-        return { color: "green", fontWeight: "bold" };
       case "Completed":
         return { color: "green", fontWeight: "bold" };
       case "Rejected":
@@ -118,15 +116,16 @@ const AdminBookingManagementPage = () => {
     <div className="booking-management-page">
       <h2>Booking Management (Admin)</h2>
 
-      {/* Filter & Search Controls */}
+      {/* Search by user name */}
       <label>Input user:</label>
-        <input
-          type="text"
-          placeholder="Search by name"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      <input
+        type="text"
+        placeholder="Search by name"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
 
+      {/* Category filter */}
       <div className="filters">
         <select
           value={categoryFilter}
@@ -135,8 +134,8 @@ const AdminBookingManagementPage = () => {
           <option value="All">All Categories</option>
           <option value="FixUp">FixUp</option>
           <option value="H2Go">H2Go</option>
-          <option value="WallFix & Style">WallFix & Style</option> {/* updated */}
           <option value="PetConnect">PetConnect</option>
+          <option value="Go Ride Connect">Go Ride Connect</option>
         </select>
       </div>
 
@@ -149,7 +148,7 @@ const AdminBookingManagementPage = () => {
             <th>Address</th>
             <th>Status</th>
             <th>Payment</th>
-            <th>Price</th> {/* Added Price column */}
+            <th>Price</th>
             <th>Created</th>
             <th>Actions</th>
           </tr>
@@ -158,42 +157,76 @@ const AdminBookingManagementPage = () => {
           {filteredBookings.length > 0 ? (
             filteredBookings.map((booking) => {
               const user = getUserById(booking.userId);
-              const isH2Go = booking.serviceId?.category === "H2Go";
-              const quantity = isH2Go ? booking.quantity || 1 : 1;
+              const category = booking.serviceId?.category;
+              const isH2Go = category === "H2Go";
+              const isPetConnect = category === "PetConnect";
+              const isGoRide = category === "Go Ride Connect";
               const unitPrice = booking.serviceId?.price || 0;
-              const totalPrice = unitPrice * quantity;
+              const quantity = (isH2Go || isPetConnect) ? booking.quantity || 1 : 1;
+              const deliveryFee = isH2Go ? 50 : 0;
+              const subtotal = unitPrice * quantity;
+              const totalPrice = subtotal + deliveryFee;
+
               return (
                 <tr key={booking._id}>
                   <td>
                     {user.firstname || ""} {user.lastname || ""}
                   </td>
                   <td>{booking.serviceId?.name || "N/A"}</td>
-                  {/* Show shopcategory here */}
-                  <td>
-                    {booking.shopcategory || booking.serviceId?.shopcategory || "N/A"}
-                  </td>
+                  <td>{booking.shopcategory || booking.serviceId?.shopcategory || "N/A"}</td>
                   <td>{booking.address}</td>
                   <td style={getStatusStyle(booking.status)}>{booking.status}</td>
                   <td>{booking.paymentMethod}</td>
                   <td>
-                    {isH2Go
-                      ? `₱${totalPrice}`
-                      : booking.serviceId?.price
+                    {isH2Go && (
+                      <>
+                        Subtotal: ₱{subtotal}
+                        <br />
+                        Delivery Fee: ₱{deliveryFee}
+                        <br />
+                        <strong>Total: ₱{totalPrice}</strong>
+                      </>
+                    )}
+                    {(isPetConnect || isGoRide) && `₱${totalPrice}`}
+                    {!isH2Go && !isPetConnect && !isGoRide && booking.serviceId?.price
                       ? `₱${booking.serviceId.price}`
-                      : "N/A"}
+                      : ""}
                   </td>
                   <td>{new Date(booking.createdAt).toLocaleString()}</td>
                   <td>
                     {booking.status === "Pending" && (
                       <>
-                        <button onClick={() => updateBookingStatus(booking._id, "Accepted", booking)}>Accept</button>
-                        <button onClick={() => updateBookingStatus(booking._id, "Rejected", booking)}>Decline</button>
+                        <button
+                          onClick={() =>
+                            updateBookingStatus(booking._id, "Accepted", booking)
+                          }
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() =>
+                            updateBookingStatus(booking._id, "Rejected", booking)
+                          }
+                        >
+                          Decline
+                        </button>
                       </>
                     )}
                     {booking.status === "Accepted" && (
-                      <button onClick={() => updateBookingStatus(booking._id, "Completed", booking)}>Done</button>
+                      <button
+                        onClick={() =>
+                          updateBookingStatus(booking._id, "Completed", booking)
+                        }
+                      >
+                        Done
+                      </button>
                     )}
-                    <button onClick={() => deleteBooking(booking._id)} style={{ color: "red" }}>Delete</button>
+                    <button
+                      onClick={() => deleteBooking(booking._id)}
+                      style={{ color: "red" }}
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               );

@@ -1,6 +1,8 @@
+// frontend/src/pages/AppointmentHistoryPage.jsx
+
 import { useEffect, useState, useContext } from "react";
 import AuthContext from "../context/AuthContext";
-import "../styles/AppointmentHistory.css"; // Import your CSS file for styling
+import "../styles/AppointmentHistory.css";
 
 const AppointmentHistoryPage = () => {
   const { user } = useContext(AuthContext);
@@ -47,30 +49,54 @@ const AppointmentHistoryPage = () => {
       )}
 
       {bookings.map((booking) => {
-        const isH2Go = booking.serviceId?.category === "H2Go";
-        const quantity = isH2Go ? booking.quantity || 1 : 1;
+        const category = booking.serviceId?.category;
+        const isH2Go = category === "H2Go";
+        const isPetConnect = category === "PetConnect";
+
+        const quantity = (isH2Go || isPetConnect) ? booking.quantity || 1 : 1;
         const unitPrice = booking.serviceId?.price || 0;
-        const totalPrice = unitPrice * quantity;
+        const deliveryFee = isH2Go ? 50 : 0;
+        const subtotal = unitPrice * quantity;
+        const totalPrice = subtotal + deliveryFee;
 
         return (
           <div className="booking-card" key={booking._id}>
-            <p><strong>Booked At:</strong> {new Date(booking.createdAt).toLocaleString()}</p>
-            <p><strong>Name:</strong> {booking.firstname} {booking.lastname}</p>
-            <p><strong>Email:</strong> {booking.email}</p>
-            <p><strong>Service:</strong> {booking.serviceId?.name || "N/A"}</p>
-            <p><strong>Website:</strong> {booking.serviceId?.category || "N/A"}</p>
-            {/* Show shopcategory if available */}
             <p>
-              <strong>Shop:</strong> {booking.shopcategory || booking.serviceId?.shopcategory || "N/A"}
+              <strong>Booked At:</strong> {new Date(booking.createdAt).toLocaleString()}
             </p>
-            {isH2Go && (
+            <p>
+              <strong>Name:</strong> {booking.firstname} {booking.lastname}
+            </p>
+            <p>
+              <strong>Email:</strong> {booking.email}
+            </p>
+            <p>
+              <strong>Service:</strong> {booking.serviceId?.name || "N/A"}
+            </p>
+            <p>
+              <strong>Website:</strong> {category || "N/A"}
+            </p>
+            <p>
+              <strong>Shop:</strong>{" "}
+              {booking.shopcategory || booking.serviceId?.shopcategory || "N/A"}
+            </p>
+
+            {(isH2Go || isPetConnect) && (
               <p>
                 <strong>Quantity:</strong> {quantity}
               </p>
             )}
+
+            {isH2Go && (
+              <p>
+                <strong>Delivery Fee:</strong> ₱{deliveryFee}
+              </p>
+            )}
+
             <p>
-              <strong>{isH2Go ? "Total Price" : "Price"}:</strong> ₱{totalPrice}
+              <strong>{(isH2Go || isPetConnect) ? "Total Price" : "Price"}:</strong> ₱{totalPrice}
             </p>
+
             <p>
               <strong>Status:</strong>{" "}
               {booking.status === "Pending" ? (

@@ -1,13 +1,15 @@
+// frontend/src/pages/ServicesPage.jsx
+
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import "../styles/ServicesPage.css";
 import { useLocation } from "react-router-dom";
 import BookingModal from "../components/BookingModal";
 
-import fixupLogo from "../assets/images/FreshStart.png";
-import h2goLogo from "../assets/images/FreshStart.png";
-import petconnectLogo from "../assets/images/FreshStart.png";
-import gorideLogo from "../assets/images/FreshStart.png";
+import fixupLogo from "../assets/images/logos/fixup.png";
+import h2goLogo from "../assets/images/logos/h2go.png";
+import petconnectLogo from "../assets/images/logos/petconnect.png";
+import gorideLogo from "../assets/images/logos/goride.png";
 
 const categoryList = [
   { key: "FixUp", label: "FixUp", className: "fixup" },
@@ -17,10 +19,10 @@ const categoryList = [
 ];
 
 const shopCategories = {
-  FixUp: ["Main Garage", "Express Garage"],
-  H2Go: ["Water Hub", "Water Express"],
-  PetConnect: ["Pet Mall", "Pet Express"],
-  "Go Ride Connect": ["Ride Center", "Ride Express"],
+  FixUp: ["KEN", "KJK"],
+  H2Go: ["AQUA BEA WATER REFILLING STATION", "ABC WATER REFILLING STATION"],
+  PetConnect: ["PET HUB", "AKO SA E ASK UNSA NI NGA PETSHOP"],
+  "Go Ride Connect": ["CHARMZKRYLE RENT A CAR", "YUKIMURA RENTAL CARS"],
 };
 
 const allSubcategories = {
@@ -34,12 +36,7 @@ const allSubcategories = {
   ],
   H2Go: ["Water Delivery", "Refill Station", "Purified", "Minerals"],
   PetConnect: ["Grooming", "Pet Supplies", "Veterinary", "Boarding"],
-  "Go Ride Connect": [
-    "Car Rental",
-    "Motorcycle Rental",
-    "Bike Rental",
-    "Chauffeur Service",
-  ],
+  "Go Ride Connect": [],
 };
 
 const categoryLogos = {
@@ -58,7 +55,7 @@ const Services = () => {
   const [selectedService, setSelectedService] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("FixUp");
   const [selectedShop, setSelectedShop] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState(""); // New state for subcategory filter
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -70,6 +67,7 @@ const Services = () => {
 
   const location = useLocation();
 
+  // Pre-fill form data from user profile
   useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -82,6 +80,7 @@ const Services = () => {
     }
   }, [user]);
 
+  // Handle ?category= query param
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const category = params.get("category");
@@ -90,9 +89,10 @@ const Services = () => {
     }
   }, [location.search]);
 
+  // Reset shop & subcategory when category changes
   useEffect(() => {
     setSelectedShop(shopCategories[selectedCategory][0]);
-    setSelectedSubcategory(""); // Reset subcategory filter on category change
+    setSelectedSubcategory("");
   }, [selectedCategory]);
 
   const fetchServices = async () => {
@@ -113,6 +113,11 @@ const Services = () => {
   }, []);
 
   const openBookingForm = (service) => {
+    // If Go Ride Connect is unavailable, alert and do not open form
+    if (service.category === "Go Ride Connect" && !service.availability) {
+      alert("Sorry, this car is currently unavailable.");
+      return;
+    }
     if (!user || !user.id) {
       alert("You must be logged in to book a service.");
       return;
@@ -148,7 +153,12 @@ const Services = () => {
         ...formData,
         shopcategory: selectedShop,
       };
-      if (selectedService.category === "H2Go") {
+
+      // Quantity logic for H2Go & PetConnect
+      if (
+        selectedService.category === "H2Go" ||
+        selectedService.category === "PetConnect"
+      ) {
         bookingPayload.quantity = quantity;
       }
 
@@ -162,7 +172,8 @@ const Services = () => {
       if (!res.ok) throw new Error(data.message || "Booking failed");
 
       alert(
-        selectedService.category === "H2Go"
+        selectedService.category === "H2Go" ||
+          selectedService.category === "PetConnect"
           ? "Product ordered successfully!"
           : "Service booked successfully!"
       );
@@ -174,7 +185,6 @@ const Services = () => {
     }
   };
 
-  // Subcategories to show in dropdown (based on selectedCategory)
   const subcategoriesForDropdown = allSubcategories[selectedCategory] || [];
 
   const renderServicesByCategory = () => {
@@ -182,61 +192,78 @@ const Services = () => {
       (s) =>
         s.category === selectedCategory &&
         (!selectedShop || s.shopcategory === selectedShop) &&
-        (selectedSubcategory ? s.subcategory === selectedSubcategory : true)
+        (selectedCategory === "Go Ride Connect"
+          ? true
+          : selectedSubcategory
+          ? s.subcategory === selectedSubcategory
+          : true)
     );
 
-    // Group by subcategory
-    const grouped = {};
-    filtered.forEach((s) => {
-      const subcat = s.subcategory || "Uncategorized";
-      if (!grouped[subcat]) grouped[subcat] = [];
-      grouped[subcat].push(s);
-    });
+    let grouped = {};
+    if (selectedCategory === "Go Ride Connect") {
+      grouped["All"] = filtered;
+    } else {
+      filtered.forEach((s) => {
+        const subcat = s.subcategory || "Uncategorized";
+        if (!grouped[subcat]) grouped[subcat] = [];
+        grouped[subcat].push(s);
+      });
+    }
 
-    // If a subcategory is selected, show only that group; else show all subcats in the category
-    const subcats = selectedSubcategory
-      ? [selectedSubcategory]
-      : allSubcategories[selectedCategory] || ["Uncategorized"];
+    const subcats =
+      selectedCategory === "Go Ride Connect"
+        ? ["All"]
+        : selectedSubcategory
+        ? [selectedSubcategory]
+        : allSubcategories[selectedCategory] || ["Uncategorized"];
 
     return (
       <div>
-        <h3>{selectedCategory} Services</h3>
+        <h3>
+          {selectedCategory}{" "}
+          {["H2Go", "PetConnect"].includes(selectedCategory)
+            ? "Products"
+            : "Services"}
+        </h3>
 
-        {/* Subcategory dropdown filter */}
-        <div style={{ marginBottom: "20px" }}>
-          <label
-            htmlFor="subcategory-filter"
-            style={{ marginRight: "10px", fontWeight: "bold", color: "#fff" }}
-          >
-            Filter by category:
-          </label>
-          <select
-            id="subcategory-filter"
-            value={selectedSubcategory}
-            onChange={(e) => setSelectedSubcategory(e.target.value)}
-            style={{ padding: "6px", fontSize: "1rem" }}
-          >
-            <option value="">All</option>
-            {subcategoriesForDropdown.map((subcat) => (
-              <option key={subcat} value={subcat}>
-                {subcat}
-              </option>
-            ))}
-          </select>
-        </div>
+        {selectedCategory !== "Go Ride Connect" && (
+          <div style={{ marginBottom: "20px" }}>
+            <label
+              htmlFor="subcategory-filter"
+              style={{ marginRight: "10px", fontWeight: "bold", color: "#fff" }}
+            >
+              Filter by category:
+            </label>
+            <select
+              id="subcategory-filter"
+              value={selectedSubcategory}
+              onChange={(e) => setSelectedSubcategory(e.target.value)}
+              style={{ padding: "6px", fontSize: "1rem" }}
+            >
+              <option value="">All</option>
+              {subcategoriesForDropdown.map((subcat) => (
+                <option key={subcat} value={subcat}>
+                  {subcat}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {subcats.map((subcat) => (
           <div key={subcat} style={{ marginBottom: 32 }}>
-            <h4
-              style={{
-                color: "#e74c3c",
-                margin: "18px 0 12px 0",
-                fontSize: "1.6rem",
-                fontWeight: "bold",
-              }}
-            >
-              {subcat}
-            </h4>
+            {selectedCategory !== "Go Ride Connect" && (
+              <h4
+                style={{
+                  color: "#e74c3c",
+                  margin: "18px 0 12px 0",
+                  fontSize: "1.6rem",
+                  fontWeight: "bold",
+                }}
+              >
+                {subcat}
+              </h4>
+            )}
             <div className="services-list">
               {grouped[subcat]?.length > 0 ? (
                 grouped[subcat].map((service) => (
@@ -264,18 +291,44 @@ const Services = () => {
                     <h3>{service.name}</h3>
                     <p>{service.description}</p>
                     <p>Price: ₱{service.price}</p>
+
+                    {/* Availability badge for Go Ride Connect */}
+                    {service.category === "Go Ride Connect" && (
+                      <p
+                        style={{
+                          color: service.availability ? "green" : "red",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {service.availability ? "Available" : "Unavailable"}
+                      </p>
+                    )}
+
                     <button
                       onClick={() => openBookingForm(service)}
-                      disabled={!user || !user.id}
-                      title={!user || !user.id ? "Log in to book" : ""}
+                      disabled={
+                        (!user || !user.id) ||
+                        (service.category === "Go Ride Connect" && !service.availability)
+                      }
+                      title={
+                        !user || !user.id
+                          ? "Log in to book"
+                          : service.category === "Go Ride Connect" && !service.availability
+                          ? "Currently unavailable"
+                          : ""
+                      }
                     >
-                      {service.category === "H2Go" ? "Order Now" : "Book Now"}
+                      {service.category === "H2Go" ||
+                      service.category === "PetConnect"
+                        ? "Order Now"
+                        : "Book Now"}
                     </button>
                   </div>
                 ))
               ) : (
                 <p style={{ color: "#888" }}>
-                  No services available in this subcategory.
+                  No services available
+                  {selectedCategory !== "Go Ride Connect" ? " in this subcategory." : "."}
                 </p>
               )}
             </div>
@@ -292,7 +345,7 @@ const Services = () => {
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "center", // centers horizontally
+          justifyContent: "center",
           gap: "10px",
           marginBottom: "20px",
         }}
@@ -301,11 +354,20 @@ const Services = () => {
           <img
             src={categoryLogos[selectedCategory]}
             alt={`${selectedCategory} Logo`}
-            style={{ maxWidth: "120px", height: "auto" }}
+            style={{
+              maxWidth: selectedCategory === "PetConnect" ? "170px" : "120px",
+              height: "auto",
+            }}
           />
         )}
         <h2 style={{ margin: 0 }}>
-          {selectedCategory ? `${selectedCategory} Services` : "Our Services"}
+          {selectedCategory
+            ? `${selectedCategory} ${
+                ["H2Go", "PetConnect"].includes(selectedCategory)
+                  ? "Products"
+                  : "Services"
+              }`
+            : "Our Services"}
         </h2>
       </div>
 

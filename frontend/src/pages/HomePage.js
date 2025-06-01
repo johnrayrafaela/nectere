@@ -4,6 +4,20 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 import "../styles/HomPage.css";
 
+
+import bannerFixup from "../assets/images/banners/banner-fixup.jpg";
+import bannerH2go from "../assets/images/banners/banner-h2go.jpg";
+import bannerPet from "../assets/images/banners/banner-pet.jpg";
+import bannerGrc from "../assets/images/banners/banner-grc.jpg";
+
+import Fixup from "../assets/images/banners/banner-fixup2.jpg";
+import H2go from "../assets/images/banners/banner-h2go2.jpg";
+import Pet from "../assets/images/banners/banner-pet2.jpg";
+import Grc from "../assets/images/banners/banner-grc2.jpg";
+
+
+
+
 // Category color mapping for themed cards
 const categoryColors = {
   FixUp: "#e74c3c",
@@ -14,10 +28,10 @@ const categoryColors = {
 
 // Hero images and text setup
 const heroImages = [
-  "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=800&q=80", // FixUp (Car)
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80", // H2GO (Mineral Water)
-  "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=800&q=80", // PetConnect (Animal)
-  "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=800&q=80", // Go Ride Connect (Rental)
+  bannerFixup,
+  bannerH2go,
+  bannerPet,
+  bannerGrc,
 ];
 
 const heroTexts = [
@@ -110,25 +124,25 @@ const serviceCategories = [
   {
     key: "FixUp",
     label: "FixUp",
-    image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=400&q=80",
+    image: Fixup,
     desc: "Automotive repairs, maintenance, and diagnostics.",
   },
   {
     key: "H2Go",
     label: "H2Go",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
+    image: H2go,
     desc: "Mineral water delivery for homes and businesses.",
   },
   {
     key: "PetConnect",
     label: "PetConnect",
-    image: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&q=80",
+    image: Pet,
     desc: "Pet care, grooming, and supplies.",
   },
   {
     key: "Go Ride Connect",
     label: "Go Ride Connect",
-    image: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80",
+    image: Grc,
     desc: "Rental rides and transport services.",
   },
 ];
