@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import "../styles/BookingModal.css";
 
 // Import a QR image for each category
-import fixupQR from "../assets/images/bg.jpg";
-import h2goQR from "../assets/images/default_profile.jpg";
-import petconnectQR from "../assets/images/FreshStart.png";
-import wallfixQR from "../assets/images/rey.jpg";
+import fixupQR from "../assets/images/qr/QR-FixUp.png";
+import h2goQR from "../assets/images/qr/QR-H2Go.png";
+import petconnectQR from "../assets/images/qr/QR-PetConnect.png";
+import wallfixQR from "../assets/images/qr/QR-GoRideConnect.png";
 
 const categoryQR = {
   FixUp: fixupQR,

@@ -147,14 +147,36 @@ const serviceCategories = [
   },
 ];
 
+// Add this above HomePage component for filter logic
+const filterOptions = [
+  { label: "ALL", value: "all" },
+  { label: "AUTOMOTIVE", value: "automotive" },
+  { label: "WATER", value: "water" },
+  { label: "PET CARE", value: "petcare" },
+];
+
+// Map filter to categories
+const filterMap = {
+  all: ["FixUp", "H2Go", "PetConnect", "Go Ride Connect"],
+  automotive: ["FixUp", "Go Ride Connect"],
+  water: ["H2Go"],
+  petcare: ["PetConnect"],
+};
+
 const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [current, setCurrent] = useState(0);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const nextSlide = () => setCurrent((prev) => (prev + 1) % heroImages.length);
   const prevSlide = () => setCurrent((prev) => (prev - 1 + heroImages.length) % heroImages.length);
   const goToSlide = (idx) => setCurrent(idx);
+
+  // Filtered categories
+  const filteredCategories = serviceCategories.filter(cat =>
+    filterMap[activeFilter].includes(cat.key)
+  );
 
   return (
     <div>
@@ -211,8 +233,37 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Welcome Message */}
+      
+      {/* Welcome Message */}
+        <section style={{ padding: "64px 20px", background: "#606060", textAlign: "center" }}>
+          <h2 style={{ fontSize: "2.5rem", color: "#e74c3c", marginBottom: "16px", letterSpacing: 1 }}>
+            BEYOND SERVICES
+          </h2>
+          <h3 style={{ fontSize: "1.5rem", color: "#E5E4E2", marginBottom: "28px" }}>
+            Convenience Crafted for Every Lifestyle
+          </h3>
+          <p style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            fontSize: "1.1rem",
+            lineHeight: "1.8",
+            color: "#E5E4E2"
+          }}>
+            Using Nectere is more than booking a service — it's a smarter, simpler way to take care of life’s daily needs.
+            With multiple services under one roof, we help you live more and worry less.
+            <br /><br />
+            Whether you're fixing up your car, refreshing your home, grooming your furry companion, or securing a quick ride,
+            every service is designed with your time, trust, and ease in mind.
+            <br /><br />
+            At Nectere, we believe in making essential services feel effortless. Each booking is a promise — of quality, speed,
+            and satisfaction. This is the future of everyday living, created for you.
+          </p>
+        </section>
+
+
       {/* Services We Offer Section */}
-      <section style={{ padding: "32px 0" }}>
+      {/* <section style={{ padding: "32px 0" }}>
         <h2 style={{ textAlign: "center", marginBottom: 32, color: "#e74c3c", letterSpacing: 1 }}>
           Services We Offer
         </h2>
@@ -270,6 +321,157 @@ const HomePage = () => {
               >
                 View Services
               </button>
+            </div>
+          ))}
+        </div>
+      </section> */}
+
+      {/* Services We Offer Section */}
+      <section style={{ background: "#23272f", padding: "48px 0" }}>
+        <h2 style={{
+          textAlign: "center",
+          marginBottom: 32,
+          color: "#e74c3c",
+          letterSpacing: 1,
+          fontWeight: 700
+        }}>
+          Services We Offer
+        </h2>
+
+        {/* Filter Bar */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 0,
+          marginBottom: 36,
+          fontWeight: 600,
+          fontSize: 17,
+          letterSpacing: 1,
+          background: "#181b20",
+          borderRadius: 30,
+          overflow: "hidden",
+          maxWidth: 700,
+          marginLeft: "auto",
+          marginRight: "auto",
+          boxShadow: "0 2px 12px #0005"
+        }}>
+          {filterOptions.map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => setActiveFilter(opt.value)}
+              style={{
+                flex: 1,
+                background: activeFilter === opt.value ? "#23272f" : "transparent",
+                color: activeFilter === opt.value ? "#e74c3c" : "#bbb",
+                border: "none",
+                outline: "none",
+                padding: "16px 0",
+                cursor: "pointer",
+                borderBottom: activeFilter === opt.value ? "3px solid #e74c3c" : "3px solid transparent",
+                fontWeight: activeFilter === opt.value ? 700 : 500,
+                fontSize: 17,
+                letterSpacing: 1,
+                transition: "color 0.2s, border-bottom 0.2s, background 0.2s"
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Card Grid */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${filteredCategories.length}, 1fr)`,
+          gap: "32px",
+          maxWidth: 1200,
+          margin: "0 auto"
+        }}>
+          {filteredCategories.map((cat) => (
+            <div
+              key={cat.key}
+              style={{
+                background: "#181b20",
+                borderRadius: 18,
+                boxShadow: `0 2px 16px #000a`,
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                minHeight: 420,
+                maxHeight: 420,
+                height: 420,
+                width: 320,
+                maxWidth: 320,
+                margin: "0 auto",
+                border: `1.5px solid ${categoryColors[cat.key] || "#333"}33`,
+                cursor: "pointer",
+                transition: "transform 0.13s",
+              }}
+              onClick={() => navigate(`/services?category=${encodeURIComponent(cat.key)}`)}
+              tabIndex={0}
+              onKeyPress={e => {
+                if (e.key === "Enter" || e.key === " ") {
+                  navigate(`/services?category=${encodeURIComponent(cat.key)}`);
+                }
+              }}
+            >
+              <img
+                src={cat.image}
+                alt={cat.label}
+                style={{
+                  width: "100%",
+                  height: 180,
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  borderBottom: `3px solid ${categoryColors[cat.key]}`,
+                  maxHeight: 180,
+                  minHeight: 180,
+                }}
+              />
+              <div style={{ padding: "28px 22px 22px 22px", flex: 1, display: "flex", flexDirection: "column" }}>
+                <span style={{
+                  color: "#bbb",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  marginBottom: 6,
+                  letterSpacing: 1
+                }}>
+                  {cat.label}
+                </span>
+                <h3 style={{
+                  color: "#fff",
+                  fontSize: 22,
+                  fontWeight: 700,
+                  margin: "0 0 10px 0"
+                }}>
+                  {cat.label}
+                </h3>
+                <p style={{
+                  color: "#e0e0e0",
+                  fontSize: 15.5,
+                  marginBottom: "auto",
+                  lineHeight: 1.7
+                }}>
+                  {cat.desc}
+                </p>
+                <span
+                  style={{
+                    marginTop: 22,
+                    alignSelf: "flex-start",
+                    color: categoryColors[cat.key],
+                    fontWeight: 700,
+                    fontSize: 15.5,
+                    letterSpacing: 1,
+                    borderBottom: `2px solid ${categoryColors[cat.key]}`,
+                    cursor: "pointer",
+                    padding: 0,
+                    transition: "color 0.2s"
+                  }}
+                >
+                 VIEW SERVICES
+                </span>
+              </div>
             </div>
           ))}
         </div>
