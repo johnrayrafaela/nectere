@@ -17,6 +17,12 @@ import EmployeeLoginPage from "./pages/EmployeeLoginPage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import FixUpServices from "./pages/FixUpServices";
 import ScrollToTop from "./components/ScrollToTop";
+import FixUpBookingPage from "./components/FixUpBookingPage";
+import PetConnectBookingPage from "./components/PetConnectBookingPage";
+import H2GoBookingPage from "./components/H2GoBookingPage";
+import GoRideConnectBookingPage from "./components/GoRideConnectBookingPage";
+import Cart from "./components/Cart";
+import { CartProvider } from "./context/CartContext"; // <-- Import CartProvider
 
 function App() {
   return (
@@ -24,32 +30,41 @@ function App() {
       <ScrollToTop />
       <div className="main-container">
         <AuthProvider>
-          <Navbar />
-          <div className="content">
-            <Routes>
-              {/* Employee Routes */}
-              <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
-              <Route path="/employee-login" element={<EmployeeLoginPage />} />
-              <Route path="/employees" element={<EmployeesPage />} />
+          <CartProvider>
+            <Navbar />
+            <div className="content">
+              <Routes>
+                {/* Employee Routes */}
+                <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+                <Route path="/employee-login" element={<EmployeeLoginPage />} />
+                <Route path="/employees" element={<EmployeesPage />} />
 
-              {/* Admin Routes */}
-              <Route path="/admin/*" element={<AdminDashboard />} />
-              <Route path="/admin-profile" element={<AdminProfilePage />} />
-              <Route path="/admin/employees" element={<AdminEmployeesPage />} />
+                {/* Admin Routes */}
+                <Route path="/admin/*" element={<AdminDashboard />} />
+                <Route path="/admin-profile" element={<AdminProfilePage />} />
+                <Route path="/admin/employees" element={<AdminEmployeesPage />} />
 
-              {/* User Routes */}
-              <Route path="/profile" element={<UserProfilePage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/" element={<HomePage />} />
-              <Route path="/appointment-history" element={<AppointmentHistoryPage />} />
+                {/* Booking Routes */}
+                <Route path="/book/fixup" element={<FixUpBookingPage />} />
+                <Route path="/book/petconnect" element={<PetConnectBookingPage />} />
+                <Route path="/book/h2go" element={<H2GoBookingPage />} />
+                <Route path="/book/gorideconnect" element={<GoRideConnectBookingPage />} />
 
-              {/* Services */}
-              <Route path="/services" element={<FixUpServices />} />
-            </Routes>
-          </div>
-          <Footer />
+                {/* User Routes */}
+                <Route path="/profile" element={<UserProfilePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/appointment-history" element={<AppointmentHistoryPage />} />
+
+                {/* Services */}
+                <Route path="/services" element={<FixUpServices />} />
+                <Route path="/cart" element={<Cart />} />
+              </Routes>
+            </div>
+            <Footer />
+          </CartProvider>
         </AuthProvider>
       </div>
     </Router>

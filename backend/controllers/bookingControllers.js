@@ -18,8 +18,17 @@ exports.createBooking = async (req, res) => {
       address,
       paymentMethod,
       quantity,
+      deliveryDate,
+      deliveryTime,
+      dropoffDate,
+      dropoffTime,
+      deliveryFee,
+      basePrice, // Added for Go Ride Connect
+      price
+
     } = req.body;
 
+    // Basic required fields
     if (
       !userId ||
       !serviceId ||
@@ -44,6 +53,18 @@ exports.createBooking = async (req, res) => {
         .json({ message: "This car is currently unavailable" });
     }
 
+    // Require delivery/dropoff fields for Go Ride Connect
+    if (service.category === "Go Ride Connect") {
+      if (
+        !deliveryDate ||
+        !deliveryTime ||
+        !dropoffDate ||
+        !dropoffTime
+      ) {
+        return res.status(400).json({ message: "Delivery and dropoff date/time are required" });
+      }
+    }
+
     const newBooking = new Booking({
       userId,
       serviceId,
@@ -54,6 +75,13 @@ exports.createBooking = async (req, res) => {
       address,
       paymentMethod,
       quantity: quantity || 1,
+       deliveryFee: deliveryFee || 0,
+      deliveryDate,
+      deliveryTime,
+      dropoffDate,
+      dropoffTime,
+      basePrice: basePrice || 0, // Store service price at booking time
+      price: price || 0, // Store destination price at booking time
     });
 
     await newBooking.save();

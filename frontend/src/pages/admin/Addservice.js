@@ -16,7 +16,7 @@ const subcategories = {
     "Engine Cooling System"
   ],
   H2Go: ["Water Delivery", "Refill Station", "Purified", "Minerals"],
-  PetConnect: ["Grooming", "Pet Supplies", "Veterinary", "Boarding"],
+  PetConnect: ["Dog Food Puppy ", "Dog Food Adult", "Shampoo"],
   "Go Ride Connect": [],
 };
 
@@ -24,7 +24,7 @@ const subcategories = {
 const shopCategories = {
   FixUp: ["KEN", "KJK"],
   H2Go: ["AQUA BEA WATER REFILLING STATION", "ABC WATER REFILLING STATION"],
-  PetConnect: ["PET HUB", "AKO SA E ASK UNSA NI NGA PETSHOP"],
+  PetConnect: ["PET HUB", "PET DYNASTY"],
   "Go Ride Connect": ["CHARMZKRYLE RENT A CAR", "YUKIMURA RENTAL CARS"],
 };
 

@@ -11,14 +11,24 @@ const bookingSchema = new mongoose.Schema(
     email: String,
     address: String,
     paymentMethod: String,
-    quantity: { type: Number, default: 1 }, 
-    // Example schema updates
+    quantity: { type: Number, default: 1 },
+
+    deliveryDate: String,
+    deliveryTime: String,
+    dropoffDate: String,
+    dropoffTime: String,
+
+    // Add these two fields:
+    basePrice: { type: Number, default: 0 }, // Service price at booking time
+    price: { type: Number, default: 0 },     // Destination price at booking time
+
+    deliveryFee: { type: Number, default: 0 },
+
     status: {
       type: String,
       enum: ["Pending", "Accepted", "Rejected", "Completed"],
       default: "Pending"
     },
-
   },
   { timestamps: true }
 );

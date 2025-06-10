@@ -37,48 +37,42 @@ const heroImages = [
 const heroTexts = [
   {
     title: "FIX UP",
-    subtitle: "Automotive Services",
     main: (
       <>
-        YOUR TRUSTED<br />
-        LINK TO HASSLE-<br />
-        FREE AUTO CARE.
+        YOUR TRUSTED LINK TO <br />
+         HASSLE-FREE AUTO CARE.<br />
       </>
     ),
     desc: "Professional car repairs, maintenance, and diagnostics for every vehicle. Drive with confidence!"
   },
   {
     title: "H2GO",
-    subtitle: "Mineral Water Delivery",
     main: (
       <>
-        PURE MINERAL WATER<br />
-        DELIVERED TO<br />
-        YOUR DOORSTEP.
+        PURE MINERAL WATER DELIVERED<br />
+        TO YOUR DOORSTEP.<br /> 
       </>
     ),
     desc: "Stay hydrated with our fast, fresh, and reliable mineral water delivery service for homes and businesses."
   },
   {
     title: "PETCONNECT",
-    subtitle: "Animal Care & Services",
     main: (
       <>
-        CONNECTING YOU<br />
-        TO TRUSTED PET<br />
-        CARE & SUPPLIES.
+        CONNECTING YOU TO TRUSTED<br />
+        DOG FOOD BRANDS<br />
+        
       </>
     ),
-    desc: "From grooming to pet essentials, we make caring for your furry friends easy and convenient."
+    desc: "We specialize in providing quality dog food to keep your furry companions healthy and happy"
   },
   {
     title: "GO RIDE CONNECT",
-    subtitle: "Rental Rides & More",
     main: (
       <>
-        RENTAL RIDES<br />
-        AND TRANSPORT<br />
-        MADE EASY.
+        RENTAL RIDES AND <br />
+        TRANSPORT MADE EASY.<br />
+        
       </>
     ),
     desc: "Affordable and convenient ride rentals and transport services for your daily needs."
@@ -108,7 +102,7 @@ const ArrowIcon = ({ direction = "left" }) => (
     style={{ transform: direction === "left" ? "rotate(180deg)" : undefined }}
     xmlns="http://www.w3.org/2000/svg"
   >
-    <circle cx="12" cy="12" r="12" fill="#e74c3c" />
+    <circle cx="12" cy="12" r="12" fill="#021526" />
     <path
       d="M10 8l4 4-4 4"
       stroke="#fff"
@@ -233,11 +227,10 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Welcome Message */}
       
       {/* Welcome Message */}
-        <section style={{ padding: "64px 20px", background: "#606060", textAlign: "center" }}>
-          <h2 style={{ fontSize: "2.5rem", color: "#e74c3c", marginBottom: "16px", letterSpacing: 1 }}>
+        <section style={{ padding: "64px 20px", background: "#00224D", textAlign: "center" }}>
+          <h2 style={{ fontSize: "2.5rem", color: "#2F58CD", marginBottom: "16px", letterSpacing: 1 }}>
             BEYOND SERVICES
           </h2>
           <h3 style={{ fontSize: "1.5rem", color: "#E5E4E2", marginBottom: "28px" }}>
@@ -261,77 +254,12 @@ const HomePage = () => {
           </p>
         </section>
 
-
       {/* Services We Offer Section */}
-      {/* <section style={{ padding: "32px 0" }}>
-        <h2 style={{ textAlign: "center", marginBottom: 32, color: "#e74c3c", letterSpacing: 1 }}>
-          Services We Offer
-        </h2>
-        <div style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: "32px",
-          maxWidth: 1200,
-          margin: "0 auto"
-        }}>
-          {serviceCategories.map((cat) => (
-            <div
-              key={cat.key}
-              style={{
-                background: "#fff",
-                borderRadius: 16,
-                boxShadow: `0 2px 12px ${categoryColors[cat.key] || "#000"}22`,
-                width: 260,
-                padding: 24,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                textAlign: "center",
-                borderTop: `6px solid ${categoryColors[cat.key]}`,
-              }}
-            >
-              <img
-                src={cat.image}
-                alt={cat.label}
-                style={{
-                  width: "100%",
-                  height: 140,
-                  objectFit: "cover",
-                  borderRadius: 12,
-                  marginBottom: 18,
-                  border: `2px solid ${categoryColors[cat.key]}`
-                }}
-              />
-              <h3 style={{ margin: "8px 0 6px 0", color: categoryColors[cat.key] }}>{cat.label}</h3>
-              <p style={{ fontSize: 15, marginBottom: 18, color: "#444" }}>{cat.desc}</p>
-              <button
-                style={{
-                  background: categoryColors[cat.key],
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 20,
-                  padding: "8px 22px",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  letterSpacing: 1,
-                  transition: "background 0.2s"
-                }}
-                onClick={() => navigate(`/services?category=${encodeURIComponent(cat.key)}`)}
-              >
-                View Services
-              </button>
-            </div>
-          ))}
-        </div>
-      </section> */}
-
-      {/* Services We Offer Section */}
-      <section style={{ background: "#23272f", padding: "48px 0" }}>
+      <section style={{ background: "#021526", padding: "48px 0" }}>
         <h2 style={{
           textAlign: "center",
           marginBottom: 32,
-          color: "#e74c3c",
+          color: "#fff",
           letterSpacing: 1,
           fontWeight: 700
         }}>
@@ -363,12 +291,12 @@ const HomePage = () => {
               style={{
                 flex: 1,
                 background: activeFilter === opt.value ? "#23272f" : "transparent",
-                color: activeFilter === opt.value ? "#e74c3c" : "#bbb",
+                color: activeFilter === opt.value ? "#6EACDA" : "#bbb",
                 border: "none",
                 outline: "none",
                 padding: "16px 0",
                 cursor: "pointer",
-                borderBottom: activeFilter === opt.value ? "3px solid #e74c3c" : "3px solid transparent",
+                borderBottom: activeFilter === opt.value ? "3px solid #6EACDA" : "3px solid transparent",
                 fontWeight: activeFilter === opt.value ? 700 : 500,
                 fontSize: 17,
                 letterSpacing: 1,
@@ -386,7 +314,8 @@ const HomePage = () => {
           gridTemplateColumns: `repeat(${filteredCategories.length}, 1fr)`,
           gap: "32px",
           maxWidth: 1200,
-          margin: "0 auto"
+          justifyContent: "center",
+          margin: "0 auto",
         }}>
           {filteredCategories.map((cat) => (
             <div

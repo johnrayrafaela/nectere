@@ -50,14 +50,29 @@ const AppointmentHistoryPage = () => {
 
       {bookings.map((booking) => {
         const category = booking.serviceId?.category;
+        const isGoRide = category === "Go Ride Connect";
+        const isYukimura = booking.shopcategory === "YUKIMURA RENTAL CARS" || booking.serviceId?.shopcategory === "YUKIMURA RENTAL CARS";
         const isH2Go = category === "H2Go";
         const isPetConnect = category === "PetConnect";
-
-        const quantity = (isH2Go || isPetConnect) ? booking.quantity || 1 : 1;
         const unitPrice = booking.serviceId?.price || 0;
-        const deliveryFee = isH2Go ? 50 : 0;
-        const subtotal = unitPrice * quantity;
-        const totalPrice = subtotal + deliveryFee;
+        const quantity = booking.quantity || 1;
+        const deliveryFee = booking.deliveryFee || 0;
+        const basePrice = isYukimura ? (booking.basePrice || booking.serviceId?.price || 0) : 0;
+        const destinationPrice = isYukimura ? (booking.price || 0) : 0;
+        let goRideTotalPrice = 0;
+        if (isGoRide) {
+          if (isYukimura) {
+            goRideTotalPrice = basePrice + destinationPrice;
+          } else {
+            goRideTotalPrice = booking.price || booking.serviceId?.price || 0;
+          }
+        }
+
+        const totalPrice = isPetConnect
+          ? (unitPrice * quantity) + deliveryFee
+          : isH2Go
+            ? (unitPrice * quantity) + deliveryFee
+            : unitPrice + deliveryFee;
 
         return (
           <div className="booking-card" key={booking._id}>
@@ -88,14 +103,70 @@ const AppointmentHistoryPage = () => {
             )}
 
             {isH2Go && (
+              <>
+                <p>
+                  <strong>Delivery Fee:</strong> ₱{deliveryFee}
+                </p>
+                <p>
+                  <strong>Total Price (with Delivery):</strong> ₱{totalPrice}
+                </p>
+              </>
+            )}
+
+            {isPetConnect && (
               <p>
                 <strong>Delivery Fee:</strong> ₱{deliveryFee}
               </p>
             )}
 
-            <p>
-              <strong>{(isH2Go || isPetConnect) ? "Total Price" : "Price"}:</strong> ₱{totalPrice}
-            </p>
+            {/* Add Go Ride Connect delivery/pickup info */}
+            {isGoRide && (
+              <>
+                <p>
+                  <strong>Delivery Date:</strong> {booking.deliveryDate || "N/A"}
+                </p>
+                <p>
+                  <strong>Delivery Time:</strong> {booking.deliveryTime || "N/A"}
+                </p>
+                <p>
+                  <strong>Dropoff Date:</strong> {booking.dropoffDate || "N/A"}
+                </p>
+                <p>
+                  <strong>Dropoff Time:</strong> {booking.dropoffTime || "N/A"}
+                </p>
+                {isYukimura && (
+                  <>
+                    <p>
+                      <strong>Service Price:</strong> ₱{basePrice ? basePrice.toLocaleString() : "0"}
+                    </p>
+                    <p>
+                      <strong>Destination Price:</strong> ₱{destinationPrice ? destinationPrice.toLocaleString() : "0"}
+                    </p>
+                  </>
+                )}
+                <p>
+                  <strong>Total Price:</strong> ₱{goRideTotalPrice ? goRideTotalPrice.toLocaleString() : "0"}
+                </p>
+              </>
+            )}
+
+            {/* FixUp specific fields */}
+            {(!isGoRide && booking.serviceId?.category === "FixUp") && (
+              <>
+                <p>
+                  <strong>Ideal Date:</strong> {booking.deliveryDate || "N/A"}
+                </p>
+                <p>
+                  <strong>Ideal Time:</strong> {booking.deliveryTime || "N/A"}
+                </p>
+              </>
+            )}
+
+            {isPetConnect && (
+              <p>
+                <strong>Total Price (with Delivery):</strong> ₱{totalPrice}
+              </p>
+            )}
 
             <p>
               <strong>Status:</strong>{" "}

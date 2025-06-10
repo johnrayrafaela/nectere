@@ -149,6 +149,11 @@ const AdminBookingManagementPage = () => {
             <th>Status</th>
             <th>Payment</th>
             <th>Price</th>
+            {/* Add columns for Go Ride Connect */}
+            <th>Delivery Date</th>
+            <th>Delivery Time</th>
+            <th>Dropoff Date</th>
+            <th>Dropoff Time</th>
             <th>Created</th>
             <th>Actions</th>
           </tr>
@@ -161,11 +166,28 @@ const AdminBookingManagementPage = () => {
               const isH2Go = category === "H2Go";
               const isPetConnect = category === "PetConnect";
               const isGoRide = category === "Go Ride Connect";
+              const isYukimura = booking.shopcategory === "YUKIMURA RENTAL CARS" || booking.serviceId?.shopcategory === "YUKIMURA RENTAL CARS";
               const unitPrice = booking.serviceId?.price || 0;
               const quantity = (isH2Go || isPetConnect) ? booking.quantity || 1 : 1;
-              const deliveryFee = isH2Go ? 50 : 0;
+              const deliveryFee = isH2Go ? 50 : isPetConnect ? (booking.deliveryFee || 0) : 0;
               const subtotal = unitPrice * quantity;
-              const totalPrice = subtotal + deliveryFee;
+              const totalPrice = isPetConnect
+                ? subtotal + deliveryFee
+                : isH2Go
+                ? subtotal + deliveryFee
+                : unitPrice + deliveryFee;
+
+              // Go Ride Connect (Yukimura): sum basePrice + price (destination)
+              let goRideTotalPrice = 0;
+              let basePrice = isYukimura ? (booking.basePrice || booking.serviceId?.price || 0) : 0;
+              let destinationPrice = isYukimura ? (booking.price || 0) : 0;
+              if (isGoRide) {
+                if (isYukimura) {
+                  goRideTotalPrice = basePrice + destinationPrice;
+                } else {
+                  goRideTotalPrice = booking.price || booking.serviceId?.price || 0;
+                }
+              }
 
               return (
                 <tr key={booking._id}>
@@ -187,11 +209,38 @@ const AdminBookingManagementPage = () => {
                         <strong>Total: ₱{totalPrice}</strong>
                       </>
                     )}
-                    {(isPetConnect || isGoRide) && `₱${totalPrice}`}
+                    {isPetConnect && (
+                      <>
+                        Subtotal: ₱{subtotal}
+                        <br />
+                        Delivery Fee: ₱{deliveryFee}
+                        <br />
+                        <strong>Total: ₱{totalPrice}</strong>
+                      </>
+                    )}
+                    {isGoRide && isYukimura && (
+                      <>
+                        Service Price: ₱{basePrice ? basePrice.toLocaleString() : "0"}
+                        <br />
+                        Destination Price: ₱{destinationPrice ? destinationPrice.toLocaleString() : "0"}
+                        <br />
+                        <strong>Total: ₱{goRideTotalPrice ? goRideTotalPrice.toLocaleString() : "0"}</strong>
+                      </>
+                    )}
+                    {isGoRide && !isYukimura && (
+                      <>
+                        <strong>Total: ₱{goRideTotalPrice ? goRideTotalPrice.toLocaleString() : "0"}</strong>
+                      </>
+                    )}
                     {!isH2Go && !isPetConnect && !isGoRide && booking.serviceId?.price
                       ? `₱${booking.serviceId.price}`
                       : ""}
                   </td>
+                  {/* Show delivery/pickup info for Go Ride Connect, else blank */}
+                  <td>{isGoRide ? booking.deliveryDate : ""}</td>
+                  <td>{isGoRide ? booking.deliveryTime : ""}</td>
+                  <td>{isGoRide ? booking.dropoffDate : ""}</td>
+                  <td>{isGoRide ? booking.dropoffTime : ""}</td>
                   <td>{new Date(booking.createdAt).toLocaleString()}</td>
                   <td>
                     {booking.status === "Pending" && (
@@ -233,7 +282,7 @@ const AdminBookingManagementPage = () => {
             })
           ) : (
             <tr>
-              <td colSpan="9" style={{ textAlign: "center" }}>
+              <td colSpan="13" style={{ textAlign: "center" }}>
                 No bookings found.
               </td>
             </tr>

@@ -3,8 +3,8 @@
 import { useState, useEffect, useContext } from "react";
 import AuthContext from "../context/AuthContext";
 import "../styles/ServicesPage.css";
-import { useLocation } from "react-router-dom";
-import BookingModal from "../components/BookingModal";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext"; // <-- Import useCart
 
 import fixupLogo from "../assets/images/logos/fixup.png";
 import h2goLogo from "../assets/images/logos/h2go.png";
@@ -21,7 +21,7 @@ const categoryList = [
 const shopCategories = {
   FixUp: ["KEN", "KJK"],
   H2Go: ["AQUA BEA WATER REFILLING STATION", "ABC WATER REFILLING STATION"],
-  PetConnect: ["PET HUB", "AKO SA E ASK UNSA NI NGA PETSHOP"],
+  PetConnect: ["PET HUB", "PET DYNASTY"],
   "Go Ride Connect": ["CHARMZKRYLE RENT A CAR", "YUKIMURA RENTAL CARS"],
 };
 
@@ -35,7 +35,7 @@ const allSubcategories = {
     "Engine Cooling System",
   ],
   H2Go: ["Water Delivery", "Refill Station", "Purified", "Minerals"],
-  PetConnect: ["Grooming", "Pet Supplies", "Veterinary", "Boarding"],
+  PetConnect: ["Dog Food Puppy ", "Dog Food Adult", "Shampoo"],
   "Go Ride Connect": [],
 };
 
@@ -46,39 +46,21 @@ const categoryLogos = {
   "Go Ride Connect": gorideLogo,
 };
 
+// Define a brown color for PetConnect
+const PETCONNECT_BROWN = "#8B5C2A"; // You can adjust this hex for your preferred brown
+
 const Services = () => {
   const { user } = useContext(AuthContext);
+  const { addToCart } = useCart(); // <-- Use addToCart from context
+  const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showForm, setShowForm] = useState(false);
-  const [selectedService, setSelectedService] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("FixUp");
   const [selectedShop, setSelectedShop] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
-    phonenumber: "",
-    email: "",
-    address: "",
-    paymentMethod: "cash",
-  });
 
   const location = useLocation();
-
-  // Pre-fill form data from user profile
-  useEffect(() => {
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        firstname: user.firstname || "",
-        lastname: user.lastname || "",
-        phonenumber: user.phonenumber || "",
-        email: user.email || "",
-      }));
-    }
-  }, [user]);
 
   // Handle ?category= query param
   useEffect(() => {
@@ -112,76 +94,25 @@ const Services = () => {
     fetchServices();
   }, []);
 
-  const openBookingForm = (service) => {
-    // If Go Ride Connect is unavailable, alert and do not open form
-    if (service.category === "Go Ride Connect" && !service.availability) {
-      alert("Sorry, this car is currently unavailable.");
-      return;
-    }
+  // Replace openBookingForm with navigation logic
+  const handleBookOrOrder = (service) => {
     if (!user || !user.id) {
       alert("You must be logged in to book a service.");
       return;
     }
-    setSelectedService(service);
-    setShowForm(true);
-  };
-
-  const closeBookingForm = () => {
-    setShowForm(false);
-    setSelectedService(null);
-    setFormData((prev) => ({ ...prev, address: "", paymentMethod: "cash" }));
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleBooking = async (e, quantity) => {
-    e.preventDefault();
-    if (!selectedService) return alert("No service selected.");
-    if (!user || !user.id) return alert("You must be logged in to book a service.");
-
-    const required = ["firstname", "lastname", "phonenumber", "email", "address"];
-    for (const field of required) {
-      if (!formData[field]) return alert(`Please fill out the ${field} field.`);
-    }
-
-    try {
-      const bookingPayload = {
-        userId: user.id,
-        serviceId: selectedService._id,
-        ...formData,
-        shopcategory: selectedShop,
-      };
-
-      // Quantity logic for H2Go & PetConnect
-      if (
-        selectedService.category === "H2Go" ||
-        selectedService.category === "PetConnect"
-      ) {
-        bookingPayload.quantity = quantity;
+    // Route to the correct booking page
+    if (service.category === "FixUp") {
+      navigate("/book/fixup", { state: { service } });
+    } else if (service.category === "H2Go") {
+      navigate("/book/h2go", { state: { service } });
+    } else if (service.category === "PetConnect") {
+      navigate("/book/petconnect", { state: { service } });
+    } else if (service.category === "Go Ride Connect") {
+      if (!service.availability) {
+        alert("Sorry, this car is currently unavailable.");
+        return;
       }
-
-      const res = await fetch("http://localhost:5000/api/bookings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bookingPayload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Booking failed");
-
-      alert(
-        selectedService.category === "H2Go" ||
-          selectedService.category === "PetConnect"
-          ? "Product ordered successfully!"
-          : "Service booked successfully!"
-      );
-      closeBookingForm();
-      fetchServices();
-    } catch (err) {
-      console.error("Booking Error:", err);
-      alert(err.message);
+      navigate("/book/gorideconnect", { state: { service } });
     }
   };
 
@@ -219,27 +150,34 @@ const Services = () => {
 
     return (
       <div>
-        <h3>
-          {selectedCategory}{" "}
-          {["H2Go", "PetConnect"].includes(selectedCategory)
-            ? "Products"
-            : "Services"}
-        </h3>
 
         {selectedCategory !== "Go Ride Connect" && (
           <div style={{ marginBottom: "20px" }}>
-            <label
+            {/* <label
               htmlFor="subcategory-filter"
               style={{ marginRight: "10px", fontWeight: "bold", color: "#fff" }}
             >
-              Filter by category:
-            </label>
+            
+            </label> */}
             <select
               id="subcategory-filter"
               value={selectedSubcategory}
               onChange={(e) => setSelectedSubcategory(e.target.value)}
-              style={{ padding: "6px", fontSize: "1rem" }}
+              style={{
+                padding: "6px 10px",
+                fontSize: "0.98rem",
+                minWidth: "180px",
+                maxWidth: "280px",
+                borderRadius: "7px",
+                border: "1px solid #ccc",
+                color: selectedSubcategory ? "#222" : "#888",
+                background: "#fff",
+                fontWeight: 500,
+              }}
             >
+              <option value="" disabled selected>
+                Filter by category
+              </option>
               <option value="">All</option>
               {subcategoriesForDropdown.map((subcat) => (
                 <option key={subcat} value={subcat}>
@@ -255,7 +193,7 @@ const Services = () => {
             {selectedCategory !== "Go Ride Connect" && (
               <h4
                 style={{
-                  color: "#e74c3c",
+                  color: selectedCategory === "PetConnect" ? "#222" : "#e74c3c",
                   margin: "18px 0 12px 0",
                   fontSize: "1.6rem",
                   fontWeight: "bold",
@@ -280,17 +218,70 @@ const Services = () => {
                         ? "goride"
                         : ""
                     }`}
+                    style={
+                      service.category === "PetConnect"
+                        ? {
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            minWidth: 340,
+                            maxWidth: 420,
+                            margin: "0 18px 32px 0",
+                            background: "#fff",
+                            border: `2px solid ${PETCONNECT_BROWN}`,
+                            borderRadius: 18,
+                            boxShadow: "0 4px 16px rgba(139,92,42,0.10)",
+                            padding: 28,
+                            height: 500,
+                          }
+                        : undefined
+                    }
                   >
                     {service.image && (
                       <img
                         src={`http://localhost:5000/uploads/${service.image}`}
                         alt={service.name}
                         className="service-image"
+                        style={
+                          service.category === "PetConnect"
+                            ? {
+                                width: 220,
+                                height: 180,
+                                objectFit: "contain",
+                                marginBottom: 18,
+                                borderRadius: 10,
+                                background: "#f8f6f3",
+                                boxShadow: "0 2px 8px rgba(139,92,42,0.08)",
+                              }
+                            : undefined
+                        }
                       />
                     )}
-                    <h3>{service.name}</h3>
-                    <p>{service.description}</p>
-                    <p>Price: ₱{service.price}</p>
+                    <h3 style={service.category === "PetConnect" ? { color: PETCONNECT_BROWN, fontWeight: 700, fontSize: "1.5rem", marginBottom: 8 } : {}}>
+                      {service.name}
+                    </h3>
+                    {service.category !== "Go Ride Connect" && (
+                      <p
+                        style={
+                          service.category === "PetConnect"
+                            ? {
+                                color: "#333",
+                                fontSize: "1.08rem",
+                                minHeight: 60,
+                                margin: "0 0 12px 0",
+                                textAlign: "center",
+                                maxWidth: 340,
+                                overflowWrap: "break-word",
+                              }
+                            : {}
+                        }
+                      >
+                        {service.description}
+                      </p>
+                    )}
+                    <p style={service.category === "PetConnect" ? { color: "#222", fontWeight: 600, marginBottom: 16, fontSize: "1.15rem" } : {}}>
+                      Price: ₱{service.price}
+                    </p>
 
                     {/* Availability badge for Go Ride Connect */}
                     {service.category === "Go Ride Connect" && (
@@ -304,25 +295,74 @@ const Services = () => {
                       </p>
                     )}
 
-                    <button
-                      onClick={() => openBookingForm(service)}
-                      disabled={
-                        (!user || !user.id) ||
-                        (service.category === "Go Ride Connect" && !service.availability)
-                      }
-                      title={
-                        !user || !user.id
-                          ? "Log in to book"
-                          : service.category === "Go Ride Connect" && !service.availability
-                          ? "Currently unavailable"
-                          : ""
-                      }
-                    >
-                      {service.category === "H2Go" ||
-                      service.category === "PetConnect"
-                        ? "Order Now"
-                        : "Book Now"}
-                    </button>
+                    {/* --- BUTTONS --- */}
+                    <div style={service.category === "PetConnect" ? { display: "flex", gap: 16, width: "100%", justifyContent: "center" } : {}}>
+                      {/* Order Now */}
+                      <button
+                        onClick={() => handleBookOrOrder(service)}
+                        disabled={
+                          (!user || !user.id) ||
+                          (service.category === "Go Ride Connect" && !service.availability)
+                        }
+                        title={
+                          !user || !user.id
+                            ? "Log in to order"
+                            : service.category === "Go Ride Connect" && !service.availability
+                            ? "Currently unavailable"
+                            : ""
+                        }
+                        style={
+                          service.category === "PetConnect"
+                            ? {
+                                background: PETCONNECT_BROWN,
+                                color: "#fff",
+                                border: "none",
+                                borderRadius: 8,
+                                padding: "12px 28px",
+                                fontWeight: 600,
+                                fontSize: "1.08rem",
+                                cursor: "pointer",
+                                transition: "background 0.2s",
+                              }
+                            : {}
+                        }
+                      >
+                        {service.category === "H2Go" ||
+                        service.category === "PetConnect"
+                          ? "Order Now"
+                          : "Book Now"}
+                      </button>
+                      {/* Add to Cart for PetConnect */}
+                      {service.category === "PetConnect" && (
+                        <button
+                          onClick={() => {
+                            if (!user || !user.id) return;
+                            addToCart({
+                              id: service._id,
+                              name: service.name,
+                              price: service.price,
+                              image: service.image ? `http://localhost:5000/uploads/${service.image}` : "",
+                              description: service.description,
+                            });
+                          }}
+                          style={{
+                            background: "#fff",
+                            color: PETCONNECT_BROWN,
+                            border: `2px solid ${PETCONNECT_BROWN}`,
+                            borderRadius: 8,
+                            padding: "12px 28px",
+                            fontWeight: 600,
+                            fontSize: "1.08rem",
+                            cursor: "pointer",
+                            transition: "background 0.2s, color 0.2s",
+                          }}
+                          disabled={!user || !user.id}
+                          title={!user || !user.id ? "Log in to add to cart" : ""}
+                        >
+                          Add to Cart
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))
               ) : (
@@ -339,7 +379,77 @@ const Services = () => {
   };
 
   return (
-    <div className="services-container">
+    <div
+      className="services-container"
+      style={{
+        position: "relative",
+        minHeight: "100vh",
+        overflow: "hidden",
+        background: "#f9f9f9",
+      }}
+    >
+      {/* Fixed background images for each category */}
+      {selectedCategory === "Go Ride Connect" && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 0,
+            background: `url(${require("../assets/images/grc-bkg.jpg")}) center/cover no-repeat`,
+            opacity: 0.7,
+            pointerEvents: "none",
+          }}
+        />
+      )}
+      {selectedCategory === "FixUp" && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 0,
+            background: `url(${require("../assets/images/fixup-bkg.jpg")}) center/cover no-repeat`,
+            opacity: 0.8,
+            pointerEvents: "none",
+          }}
+        />
+      )}
+      {selectedCategory === "PetConnect" && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 0,
+            background: `url(${require("../assets/images/pet-bkg.jpg")}) center/cover no-repeat`,
+            opacity: 0.7,
+            pointerEvents: "none",
+          }}
+        />
+      )}
+      {selectedCategory === "H2Go" && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: 0,
+            background: `url(${require("../assets/images/h2go-bkg.jpg")}) center/cover no-repeat`,
+            opacity: 0.7,
+            pointerEvents: "none",
+          }}
+        />
+      )}
+
       {/* Logo and Title Side-by-Side */}
       <div
         style={{
@@ -348,6 +458,8 @@ const Services = () => {
           justifyContent: "center",
           gap: "10px",
           marginBottom: "20px",
+          position: "relative",
+          zIndex: 1,
         }}
       >
         {categoryLogos[selectedCategory] && (
@@ -360,7 +472,10 @@ const Services = () => {
             }}
           />
         )}
-        <h2 style={{ margin: 0 }}>
+        <h2 style={{
+          margin: 0,
+          color: selectedCategory === "PetConnect" ? "#222" : undefined, // Black for PetConnect
+        }}>
           {selectedCategory
             ? `${selectedCategory} ${
                 ["H2Go", "PetConnect"].includes(selectedCategory)
@@ -372,12 +487,35 @@ const Services = () => {
       </div>
 
       {/* Shop Category Navbar */}
+      <h1 style={{
+        color: selectedCategory === "PetConnect" ? "#222" : "#fff", // Black for PetConnect
+        position: "relative",
+        zIndex: 1
+      }}> SHOPS </h1>
+      {selectedCategory === "Go Ride Connect" && (
+        <p
+          style={{
+            color: "#fff",
+            position: "relative",
+            zIndex: 1,
+            marginTop: "2px",
+            marginBottom: "10px",
+            fontSize: "1rem",
+            textAlign: "left",
+            opacity: 0.95,
+          }}
+        >
+          Select a rental shop below to browse and avail available car rental services from our trusted partners.
+        </p>
+      )}
       <div
         style={{
           margin: "16px 0",
           display: "flex",
           gap: "10px",
           flexWrap: "wrap",
+          position: "relative",
+          zIndex: 1,
         }}
       >
         {shopCategories[selectedCategory].map((shop) => (
@@ -385,15 +523,72 @@ const Services = () => {
             key={shop}
             className={`shop-nav-btn${selectedShop === shop ? " active" : ""}`}
             style={{
-              padding: "7px 18px",
-              borderRadius: "20px",
+              padding: "7px 14px",
+              fontSize: "0.95rem",
+              borderRadius: "8px",
               border:
-                selectedShop === shop ? "2px solid #e74c3c" : "1px solid #ccc",
-              background: selectedShop === shop ? "#e74c3c" : "#fff",
-              color: selectedShop === shop ? "#fff" : "#333",
+                selectedShop === shop
+                  ? `2px solid ${
+                      selectedCategory === "FixUp"
+                        ? "#e74c3c"
+                        : selectedCategory === "H2Go"
+                        ? "#2980b9"
+                        : selectedCategory === "PetConnect"
+                        ? PETCONNECT_BROWN
+                        : selectedCategory === "Go Ride Connect"
+                        ? "#27ae60"
+                        : "#ccc"
+                    }`
+                  : `1px solid ${
+                      selectedCategory === "FixUp"
+                        ? "#e74c3c"
+                        : selectedCategory === "H2Go"
+                        ? "#2980b9"
+                        : selectedCategory === "PetConnect"
+                        ? PETCONNECT_BROWN
+                        : selectedCategory === "Go Ride Connect"
+                        ? "#27ae60"
+                        : "#ccc"
+                    }`,
+              background:
+                selectedShop === shop
+                  ? selectedCategory === "FixUp"
+                    ? "#e74c3c"
+                    : selectedCategory === "H2Go"
+                    ? "#2980b9"
+                    : selectedCategory === "PetConnect"
+                    ? PETCONNECT_BROWN
+                    : selectedCategory === "Go Ride Connect"
+                    ? "#27ae60"
+                    : "#fff"
+                  : "#fff",
+              color:
+                selectedShop === shop
+                  ? "#fff"
+                  : selectedCategory === "FixUp"
+                  ? "#e74c3c"
+                  : selectedCategory === "H2Go"
+                  ? "#2980b9"
+                  : selectedCategory === "PetConnect"
+                  ? PETCONNECT_BROWN
+                  : selectedCategory === "Go Ride Connect"
+                  ? "#27ae60"
+                  : "#333",
               fontWeight: 600,
               cursor: "pointer",
               transition: "all 0.2s",
+              boxShadow:
+                selectedShop === shop
+                  ? selectedCategory === "FixUp"
+                    ? "0 2px 8px rgba(231,76,60,0.12)"
+                    : selectedCategory === "H2Go"
+                    ? "0 2px 8px rgba(41,128,185,0.12)"
+                    : selectedCategory === "PetConnect"
+                    ? "0 2px 8px rgba(139,92,42,0.12)" // brown shadow
+                    : selectedCategory === "Go Ride Connect"
+                    ? "0 2px 8px rgba(39,174,96,0.12)"
+                    : "none"
+                  : "none",
             }}
             onClick={() => setSelectedShop(shop)}
           >
@@ -402,22 +597,13 @@ const Services = () => {
         ))}
       </div>
 
-      {loading && <p>Loading services...</p>}
-      {error && <p className="error">{error}</p>}
+      {loading && <p style={{ position: "relative", zIndex: 1 }}>Loading services...</p>}
+      {error && <p className="error" style={{ position: "relative", zIndex: 1 }}>{error}</p>}
 
-      {renderServicesByCategory()}
-
-      {showForm && selectedService && (
-        <BookingModal
-          selectedService={selectedService}
-          formData={formData}
-          handleInputChange={handleInputChange}
-          handleBooking={handleBooking}
-          closeBookingForm={closeBookingForm}
-        />
-      )}
+      <div style={{ position: "relative", zIndex: 1 }}>{renderServicesByCategory()}</div>
     </div>
   );
 };
 
 export default Services;
+

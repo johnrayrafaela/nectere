@@ -1,0 +1,161 @@
+.petconnect-order-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  gap: 32px;
+}
+
+.petconnect-order-form {
+  flex: 2;
+}
+
+.petconnect-input,
+.petconnect-select {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.petconnect-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.petconnect-checkbox-row {
+  margin-bottom: 32px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.petconnect-radio-row {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.petconnect-shipping-method {
+  margin-bottom: 32px;
+  background: #f7f7f7;
+  padding: 16px;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+.petconnect-payment-box {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 32px;
+  background: #fff;
+}
+
+.petconnect-payment-option {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.petconnect-payment-option:last-child {
+  border-bottom: none;
+}
+
+.petconnect-payment-details {
+  margin-top: 12px;
+  font-size: 15px;
+}
+
+.petconnect-billing-box {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 32px;
+  background: #fff;
+}
+
+.petconnect-billing-option {
+  padding: 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.petconnect-billing-option:last-child {
+  border-bottom: none;
+}
+
+.petconnect-complete-btn {
+  width: 100%;
+  background: #7c5dc7;
+  color: #fff;
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: background 0.2s;
+}
+.petconnect-complete-btn:hover {
+  background: #5a3fa0;
+}
+
+
+
+.petconnect-summary-product {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.petconnect-summary-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 12px;
+}
+
+.petconnect-summary-title {
+  font-weight: 500;
+}
+
+.petconnect-summary-price {
+  color: #666;
+  font-size: 14px;
+}
+
+.petconnect-apply-btn {
+  width: 100%;
+  margin-bottom: 24px;
+  padding: 10px 0;
+  background: #eee;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.petconnect-apply-btn:hover {
+  background: #e0e0e0;
+}
+
+.petconnect-summary-totals {
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}
+
+.petconnect-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.petconnect-summary-total {
+  font-weight: 600;
+  font-size: 18px;
+  margin-top: 12px;
+}

@@ -1,0 +1,431 @@
+/* Reset and base styles
+body {
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+} */
+
+/* Header styles */
+.booking-header {
+  background: #000;
+  color: #fff;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.booking-header .container {
+  position: relative;
+}
+
+.booking-logo {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 110px;
+}
+
+.header-content {
+  width: 100%;
+  text-align: center;
+}
+
+.header-content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 0;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+.header-content p {
+  margin: 0.5rem 0 0;
+  color: #fff;
+}
+
+/* Main content styles */
+.booking-page {
+  background: #fff;
+  min-height: 100vh;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Form styles */
+.booking-form {
+  max-width: 100%;
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 2.5rem 0 3rem 0;
+}
+
+/* Section styles */
+.form-section {
+  margin-bottom: 5rem;
+  width: 100%;
+}
+
+.form-section h2 {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.75rem;
+  margin-bottom: 3.5rem;
+  color: #333;
+}
+
+/* Grid layout for two-column inputs */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 6rem;
+  width: 100%;
+}
+
+/* Form field styles */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2.5rem;
+  width: 100%;
+  height: 200px;
+}
+
+.form-field label {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-field input,
+.form-field select {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+/* Specific styles for date and time inputs */
+.form-field input[type="date"],
+.form-field select[name="idealTime"] {
+  min-width: 200px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+}
+
+/* Required field indicator */
+.form-field label::after {
+  content: "*";
+  color: red;
+  margin-left: 4px;
+}
+
+.form-field label[for="currentMileage"]::after,
+.form-field label[for="modelOptional"]::after {
+  display: none;
+}
+
+/* Full width fields */
+.full-width-field {
+  grid-column: 1 / -1;
+}
+
+/* Service box styles */
+.service-box {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 80px;
+  box-sizing: border-box;
+  max-width: 800px;
+}
+
+.service-name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.service-name strong {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.change-service-btn {
+  background: transparent;
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.change-service-btn:hover {
+  background: #e74c3c;
+  color: #fff;
+}
+
+/* Payment section */
+.payment-section {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center;    /* Center children horizontally */
+}
+
+.payment-section .form-field {
+  width: 100%;
+}
+
+/* Specific styles for date, time and payment inputs */
+.form-field input[type="date"],
+.form-field select[name="idealTime"],
+.payment-section select {
+  width: 100%;
+  min-width: 350px;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 1rem;
+  height: 55px;
+  box-sizing: border-box;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+  padding-right: 2.5rem;
+}
+
+/* Ensure options in select are properly sized */
+.form-field select[name="idealTime"] option,
+.payment-section select option {
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+/* Remove default date input icon */
+.form-field input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+}
+
+/* Privacy section styles */
+.privacy-section {
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.privacy-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.privacy-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.privacy-checkbox label {
+  font-size: 1rem;
+  color: #333;
+}
+
+.privacy-text {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0 0 1.5rem 0;
+}
+
+.privacy-text a {
+  color: #333;
+  text-decoration: underline;
+}
+
+/* Submit button container */
+.form-actions {
+  text-align: left;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.submit-btn {
+  background: #ccc;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 2.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+  min-width: 120px;
+  margin-left: 0;
+}
+
+.submit-btn:hover {
+  background: #999;
+}
+
+/* Date Picker Styles */
+.date-picker-input {
+  width: 100%;
+  min-width: 350px;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 1rem;
+  height: 55px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.react-datepicker {
+  font-family: inherit;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.react-datepicker__header {
+  background-color: #e74c3c;
+  border-bottom: none;
+  padding: 10px;
+}
+
+.react-datepicker__current-month {
+  color: white;
+  font-weight: 500;
+}
+
+.react-datepicker__day-name {
+  color: white;
+}
+
+.react-datepicker__day--selected {
+  background-color: #e74c3c !important;
+  color: white;
+}
+
+.react-datepicker__day:hover {
+  background-color: #f8d7d4;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: #e74c3c !important;
+  color: white;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: white;
+}
+
+.react-datepicker__day--disabled {
+  color: #ccc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .booking-page {
+    padding: 0 1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .service-box {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .service-name {
+    text-align: center;
+  }
+
+  .change-service-btn {
+    width: 100%;
+  }
+
+  .booking-logo {
+    left: 1rem;
+    max-width: 90px;
+  }
+
+  .header-content h1 {
+    font-size: 2rem;
+  }
+
+  .form-section {
+    padding: 0 1rem;
+  }
+
+  .form-field {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section h2 {
+    margin-bottom: 2rem;
+  }
+
+  .privacy-section,
+  .form-actions {
+    padding: 0 1rem;
+  }
+
+  .form-field input[type="date"],
+  .form-field select[name="idealTime"],
+  .payment-section select {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .date-picker-input {
+    min-width: 100%;
+  }
+} 
