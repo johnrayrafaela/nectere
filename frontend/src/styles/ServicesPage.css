@@ -226,7 +226,17 @@
 }
 .service-card.petconnect {
   border: 2px solid #b7986b;
-  box-shadow: 0 4px 10px rgba(183, 152, 107, 0.2);
+  box-shadow: 0 4px 10px rgba(183, 152, 107, 0.18);
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  width: 250px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 .service-card.wallfix {
   border: 2px solid #a2836e;
@@ -277,6 +287,10 @@
     width: 45%;
     min-width: 220px;
   }
+  .service-card.petconnect {
+    width: 45%;
+    min-width: 220px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -287,6 +301,11 @@
   }
 
   .service-card {
+    width: 90%;
+    min-width: unset;
+  }
+
+  .service-card.petconnect {
     width: 90%;
     min-width: unset;
   }
@@ -313,6 +332,11 @@
     padding: 8px;
   }
   .service-card {
+    padding: 10px;
+    width: 100%;
+    font-size: 14px;
+  }
+  .service-card.petconnect {
     padding: 10px;
     width: 100%;
     font-size: 14px;

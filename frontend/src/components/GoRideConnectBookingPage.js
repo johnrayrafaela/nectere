@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useMemo } from "react";
 import AuthContext from "../context/AuthContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/GoRideConnectCarDetails.css"; // Reuse the car details CSS for theme
+import qrGRC from "../assets/images/qr/QR-GoRideConnect.png"; // Add this import at the top
 
 // Imports for cars
 import t1 from "../assets/images/grc/t1.jpg";
@@ -269,6 +270,18 @@ const GoRideConnectBookingPage = () => {
               </div>
               <div>
                 <label>
+                  Address:
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </label>
+              </div>
+              <div>
+                <label>
                   Pickup Date &amp; Time
                   <div className="grc-date-row">
                     <input
@@ -309,18 +322,7 @@ const GoRideConnectBookingPage = () => {
                   </div>
                 </label>
               </div>
-              <div>
-                <label>
-                  Address:
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </label>
-              </div>
+              
               {/* DESTINATION DROPDOWN FOR YUKIMURA ONLY */}
               {isYukimura && (
                 <div>
@@ -355,6 +357,35 @@ const GoRideConnectBookingPage = () => {
                   </select>
                 </label>
               </div>
+              {/* QR code for GCash payment */}
+              {formData.paymentMethod === "gcash" && (
+                <div style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginTop: 20
+                }}>
+                  <p>
+                    <strong>Scan this QR code to pay via GCash:</strong>
+                  </p>
+                  <img
+                    src={qrGRC}
+                    alt="GCash QR Code"
+                    style={{
+                      width: 350,
+                      height: 550,
+                      objectFit: "contain",
+                      margin: "12px 0",
+                      display: "block",
+                      borderRadius: 12,
+                    }}
+                  />
+                  <p style={{ fontSize: "0.95em", marginTop: 8, color: "#555" }}>
+                    Please scan and pay using GCash.
+                  </p>
+                </div>
+              )}
               <div>
                 <button className="goride-button" type="submit" disabled={loading}>
                   {loading ? "Submitting..." : "Book Now"}

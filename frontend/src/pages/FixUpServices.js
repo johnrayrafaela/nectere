@@ -46,6 +46,18 @@ const categoryLogos = {
   "Go Ride Connect": gorideLogo,
 };
 
+// Dummy shop addresses for each shopcategory
+const shopAddresses = {
+  "KEN": "123 Ken St., Balamban, Cebu",
+  "KJK": "456 KJK Ave., Balamban, Cebu",
+  "AQUA BEA WATER REFILLING STATION": "789 Aqua Bea Rd., Balamban, Cebu",
+  "ABC WATER REFILLING STATION": "101 ABC St., Balamban, Cebu",
+  "PET HUB": "202 Pet Hub Lane, Balamban, Cebu",
+  "PET DYNASTY": "303 Pet Dynasty Blvd., Balamban, Cebu",
+  "CHARMZKRYLE RENT A CAR": "404 Charmzkryle Dr., Balamban, Cebu",
+  "YUKIMURA RENTAL CARS": "505 Yukimura St., Balamban, Cebu"
+};
+
 // Define a brown color for PetConnect
 const PETCONNECT_BROWN = "#8B5C2A"; // You can adjust this hex for your preferred brown
 
@@ -218,68 +230,45 @@ const Services = () => {
                         ? "goride"
                         : ""
                     }`}
-                    style={
-                      service.category === "PetConnect"
-                        ? {
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            minWidth: 340,
-                            maxWidth: 420,
-                            margin: "0 18px 32px 0",
-                            background: "#fff",
-                            border: `2px solid ${PETCONNECT_BROWN}`,
-                            borderRadius: 18,
-                            boxShadow: "0 4px 16px rgba(139,92,42,0.10)",
-                            padding: 28,
-                            height: 500,
-                          }
-                        : undefined
-                    }
                   >
                     {service.image && (
                       <img
                         src={`http://localhost:5000/uploads/${service.image}`}
                         alt={service.name}
                         className="service-image"
-                        style={
-                          service.category === "PetConnect"
-                            ? {
-                                width: 220,
-                                height: 180,
-                                objectFit: "contain",
-                                marginBottom: 18,
-                                borderRadius: 10,
-                                background: "#f8f6f3",
-                                boxShadow: "0 2px 8px rgba(139,92,42,0.08)",
-                              }
-                            : undefined
-                        }
                       />
                     )}
-                    <h3 style={service.category === "PetConnect" ? { color: PETCONNECT_BROWN, fontWeight: 700, fontSize: "1.5rem", marginBottom: 8 } : {}}>
+                    {/* --- Shop Address Label --- */}
+                    {service.shopcategory && (
+                      <div
+                        style={{
+                          background: "#f1f1f1",
+                          color: "#444",
+                          borderRadius: 6,
+                          padding: "6px 12px",
+                          fontSize: "0.98rem",
+                          marginBottom: 10,
+                          marginTop: 2,
+                          fontWeight: 500,
+                          textAlign: "center",
+                          maxWidth: 320,
+                          alignSelf: "center",
+                        }}
+                      >
+                        <span style={{ color: "#888", fontWeight: 600 }}>Shop Address:</span>{" "}
+                        {shopAddresses[service.shopcategory] || "No address set"}
+                      </div>
+                    )}
+                    {/* --- End Shop Address Label --- */}
+                    <h3>
                       {service.name}
                     </h3>
                     {service.category !== "Go Ride Connect" && (
-                      <p
-                        style={
-                          service.category === "PetConnect"
-                            ? {
-                                color: "#333",
-                                fontSize: "1.08rem",
-                                minHeight: 60,
-                                margin: "0 0 12px 0",
-                                textAlign: "center",
-                                maxWidth: 340,
-                                overflowWrap: "break-word",
-                              }
-                            : {}
-                        }
-                      >
+                      <p>
                         {service.description}
                       </p>
                     )}
-                    <p style={service.category === "PetConnect" ? { color: "#222", fontWeight: 600, marginBottom: 16, fontSize: "1.15rem" } : {}}>
+                    <p>
                       Price: ₱{service.price}
                     </p>
 
@@ -296,7 +285,7 @@ const Services = () => {
                     )}
 
                     {/* --- BUTTONS --- */}
-                    <div style={service.category === "PetConnect" ? { display: "flex", gap: 16, width: "100%", justifyContent: "center" } : {}}>
+                    <div>
                       {/* Order Now */}
                       <button
                         onClick={() => handleBookOrOrder(service)}
@@ -310,21 +299,6 @@ const Services = () => {
                             : service.category === "Go Ride Connect" && !service.availability
                             ? "Currently unavailable"
                             : ""
-                        }
-                        style={
-                          service.category === "PetConnect"
-                            ? {
-                                background: PETCONNECT_BROWN,
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: 8,
-                                padding: "12px 28px",
-                                fontWeight: 600,
-                                fontSize: "1.08rem",
-                                cursor: "pointer",
-                                transition: "background 0.2s",
-                              }
-                            : {}
                         }
                       >
                         {service.category === "H2Go" ||
@@ -344,17 +318,6 @@ const Services = () => {
                               image: service.image ? `http://localhost:5000/uploads/${service.image}` : "",
                               description: service.description,
                             });
-                          }}
-                          style={{
-                            background: "#fff",
-                            color: PETCONNECT_BROWN,
-                            border: `2px solid ${PETCONNECT_BROWN}`,
-                            borderRadius: 8,
-                            padding: "12px 28px",
-                            fontWeight: 600,
-                            fontSize: "1.08rem",
-                            cursor: "pointer",
-                            transition: "background 0.2s, color 0.2s",
                           }}
                           disabled={!user || !user.id}
                           title={!user || !user.id ? "Log in to add to cart" : ""}

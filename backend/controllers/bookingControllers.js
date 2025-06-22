@@ -23,9 +23,11 @@ exports.createBooking = async (req, res) => {
       dropoffDate,
       dropoffTime,
       deliveryFee,
-      basePrice, // Added for Go Ride Connect
-      price
-
+      basePrice,
+      price,
+      // Add these for FixUp
+      idealDate,
+      idealTime
     } = req.body;
 
     // Basic required fields
@@ -65,6 +67,13 @@ exports.createBooking = async (req, res) => {
       }
     }
 
+    // Require idealDate/idealTime for FixUp
+    if (service.category === "FixUp") {
+      if (!idealDate || !idealTime) {
+        return res.status(400).json({ message: "Ideal date and time are required for FixUp bookings" });
+      }
+    }
+
     const newBooking = new Booking({
       userId,
       serviceId,
@@ -75,13 +84,16 @@ exports.createBooking = async (req, res) => {
       address,
       paymentMethod,
       quantity: quantity || 1,
-       deliveryFee: deliveryFee || 0,
+      deliveryFee: deliveryFee || 0,
       deliveryDate,
       deliveryTime,
       dropoffDate,
       dropoffTime,
-      basePrice: basePrice || 0, // Store service price at booking time
-      price: price || 0, // Store destination price at booking time
+      basePrice: basePrice || 0,
+      price: price || 0,
+      // Save idealDate and idealTime for FixUp
+      idealDate: idealDate || null,
+      idealTime: idealTime || null,
     });
 
     await newBooking.save();

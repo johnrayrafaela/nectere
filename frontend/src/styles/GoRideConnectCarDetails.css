@@ -69,14 +69,17 @@
 
 /* Info panel */
 .grc-info {
-  flex: 1.2;
+  display: block;              /* Make it a block element */
+  width: 100%;                 /* Take full width of parent */
+  max-width: 100%;             /* Prevent overflow */
+  margin-top: 32px;            /* Add space above for separation */
   background: #f6f9fc;
   border-radius: 16px;
-  padding: 32px 32px 24px 32px;
+  padding: 32px 24px 24px 24px; /* Slightly less padding on sides */
   box-shadow: 0 2px 16px #f0f0f0;
   box-sizing: border-box;
-  width: 100%;
   min-width: 0;
+  overflow-x: auto;
 }
 
 .grc-info h1 {
@@ -104,6 +107,7 @@
   max-width: 100%;
   margin-bottom: 12px;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .grc-form-2col label {
@@ -118,13 +122,15 @@
 .grc-form-2col input,
 .grc-form-2col select {
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 8px 10px;
   margin-top: 4px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
   background: #fff;
-  box-sizing: border-box;
 }
 
 .grc-date-row {
@@ -207,6 +213,10 @@
     height: auto;
     min-height: 220px;
   }
+  .grc-info {
+    max-width: 100%;
+    padding: 24px 8px 18px 8px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -221,7 +231,8 @@
     width: 100%;
   }
   .grc-info {
-    padding: 18px 8px 18px 8px;
+    margin-top: 18px;
+    padding: 18px 6px 18px 6px;
   }
   .grc-main-img {
     width: 100%;
@@ -247,6 +258,7 @@
     font-size: 1.3rem;
   }
   .grc-info {
+    max-width: 100%;
     padding: 8px 2px 8px 2px;
   }
   .grc-description-section {

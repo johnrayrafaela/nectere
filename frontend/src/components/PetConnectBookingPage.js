@@ -28,7 +28,11 @@ const PetConnectBookingPage = () => {
   const { setCartItems } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
+  // Get quantity from cart if passed via location.state.service.quantity
   const service = location.state?.service;
+
+  // Use quantity from service (from cart), fallback to 1
+  const initialQuantity = service?.quantity || 1;
 
   // Guard: If no service, redirect or show error
   useEffect(() => {
@@ -45,7 +49,7 @@ const PetConnectBookingPage = () => {
     address: "",
     apartment: "",
     paymentMethod: "bank",
-    quantity: 1, // <-- add this
+    quantity: initialQuantity, // <-- use initialQuantity from cart/service
   });
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [loading, setLoading] = useState(false);

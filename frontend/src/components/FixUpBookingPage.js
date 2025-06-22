@@ -94,18 +94,13 @@ const FixUpBookingPage = () => {
       email: formData.personalDetails.email?.trim(),
       address: formData.personalDetails.address?.trim(),
       paymentMethod: formData.serviceDetails.paymentMethod,
+      idealDate: formData.serviceDetails.idealDate,
+      idealTime: formData.serviceDetails.idealTime,
+      price: selectedService?.price || 0,
+      additionalInfo: formData.serviceDetails.additionalInfo,
     };
 
-    // Add deliveryDate and deliveryTime if present
-    if (formData.serviceDetails.idealDate) {
-      bookingData.deliveryDate = formData.serviceDetails.idealDate;
-    }
-    if (formData.serviceDetails.idealTime) {
-      bookingData.deliveryTime = formData.serviceDetails.idealTime;
-    }
-
     // Double-check all required fields are present and not empty
-    console.log("bookingData", bookingData);
     for (const key of [
       "userId",
       "serviceId",
@@ -114,7 +109,9 @@ const FixUpBookingPage = () => {
       "phonenumber",
       "email",
       "address",
-      "paymentMethod"
+      "paymentMethod",
+      "idealDate",
+      "idealTime"
     ]) {
       if (!bookingData[key]) {
         setSubmitError("Please fill in all required fields.");
@@ -140,8 +137,8 @@ const FixUpBookingPage = () => {
         setSubmitSuccess("Booking submitted successfully!");
         setTimeout(() => {
           navigate("/services?category=FixUp");
-          window.location.reload(); // Optional: force refresh for a clean state
-        }, 1200); // 1.2 seconds delay so user sees the success message
+          window.location.reload();
+        }, 1200);
       }
     } catch (error) {
       setSubmitError("An error occurred. Please try again.");

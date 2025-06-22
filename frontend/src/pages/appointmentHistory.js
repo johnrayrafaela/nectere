@@ -154,10 +154,13 @@ const AppointmentHistoryPage = () => {
             {(!isGoRide && booking.serviceId?.category === "FixUp") && (
               <>
                 <p>
-                  <strong>Ideal Date:</strong> {booking.deliveryDate || "N/A"}
+                  <strong>Ideal Date:</strong> {booking.idealDate || "N/A"}
                 </p>
                 <p>
-                  <strong>Ideal Time:</strong> {booking.deliveryTime || "N/A"}
+                  <strong>Ideal Time:</strong> {booking.idealTime || "N/A"}
+                </p>
+                <p>
+                  <strong>Price:</strong> ₱{booking.price ? booking.price.toLocaleString() : "N/A"}
                 </p>
               </>
             )}

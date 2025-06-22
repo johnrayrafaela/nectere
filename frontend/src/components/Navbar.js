@@ -62,31 +62,34 @@ const Navbar = () => {
       {/* --- CART ICON + AUTH SECTION --- */}
       <div className="auth-section" style={{ display: "flex", alignItems: "center", gap: "18px" }}>
         {/* Cart Icon with badge */}
-        <Link to="/cart" className="cart-link" style={{ marginRight: "8px", display: "flex", alignItems: "center", position: "relative" }}>
-          <FaShoppingCart size={22} color="#fff" />
-          {cartCount > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: -6,
-                right: -6,
-                background: "#e74c3c",
-                color: "#fff",
-                borderRadius: "50%",
-                padding: "2px 7px",
-                fontSize: 13,
-                fontWeight: 700,
-                minWidth: 22,
-                textAlign: "center",
-                lineHeight: "18px",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.12)",
-                zIndex: 2,
-              }}
-            >
-              {cartCount}
-            </span>
-          )}
-        </Link>
+        {/* Hide cart if admin is logged in */}
+        {(!user || user.role !== "admin") && (
+          <Link to="/cart" className="cart-link" style={{ marginRight: "8px", display: "flex", alignItems: "center", position: "relative" }}>
+            <FaShoppingCart size={22} color="#fff" />
+            {cartCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -6,
+                  right: -6,
+                  background: "#e74c3c",
+                  color: "#fff",
+                  borderRadius: "50%",
+                  padding: "2px 7px",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  minWidth: 22,
+                  textAlign: "center",
+                  lineHeight: "18px",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.12)",
+                  zIndex: 2,
+                }}
+              >
+                {cartCount}
+              </span>
+            )}
+          </Link>
+        )}
         {/* Auth Buttons */}
         {user ? (
           <>
