@@ -194,15 +194,7 @@ const Cart = () => {
                 </span>
               </div>
 
-              {subtotal >= 2000 ? (
-                <div className="cart-summary-shipping cart-summary-shipping-eligible">
-                  Congrats, you're eligible for <b>Free Delivery</b>
-                </div>
-              ) : (
-                <div className="cart-summary-shipping cart-summary-shipping-more">
-                  Add ₱{(2000 - subtotal).toLocaleString()} more for <b>Free Delivery</b>
-                </div>
-              )}
+              
               <button
                 className="cart-checkout-btn"
                 onClick={handleCheckout}
